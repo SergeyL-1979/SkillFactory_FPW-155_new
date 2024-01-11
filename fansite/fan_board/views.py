@@ -18,26 +18,6 @@ class CategoryAdsView(generic.ListView):
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
 
-    # def get_queryset(self):
-    #     category_slug = self.kwargs.get('category')
-    #     # Get the integer value for the given category slug
-    #     category_int = getattr(Category, category_slug, None)
-    #     if category_int is not None:
-    #         # Filter advertisements based on the category
-    #         return Advertisement.objects.filter(category=category_int)
-    #     else:
-    #         # Handle the case where the category is not found
-    #         return Advertisement.objects.none()
-
-    def get_context_data(self, **kwargs):
-        context = super(CategoryAdsView, self).get_context_data(**kwargs)
-        category_name = [category for category in Category.choices]
-        # category_slug = self.kwargs.get('category')
-        # # category = get_object_or_404(Category, slug=category_slug)
-        # category = Advertisement.objects.get(category=category_slug)
-        context['category_name'] = category_name
-        return context
-
 
 class AdListView(generic.ListView):
     model = Advertisement
