@@ -1,0 +1,32 @@
+{#{% extends "board/base.html" %}#}
+{#{% load i18n %}#}
+
+<head>
+<style>
+.errorlist{
+    color: #0000cc;
+}
+</style>
+</head>
+
+
+{% block head_title %}
+{#{{ block.super }} #}
+    : Редактировать профиль
+{% endblock head_title%}
+
+{% block add_category %}
+{%endblock add_category %}
+
+{% block body %}
+
+    <div style="text-align:left" class="col-md-5">
+        <h2>Редактировать профиль</h2><br>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" class="btn btn-primary btn-block" value="Сохранить">
+        </form>
+    </div>
+
+{%endblock%}

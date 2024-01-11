@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>{{ cat_list.0.get_category_display }}</h1>
+  <h1>{{ category_name }}</h1>
+{{ ads_list }}
+  {% if ads_list %}
+    <ul>
+      {% for ad in ads_list %}
+        <li>
+          <h2><a href="{% url 'fan_board:ads_detail' ad.pk %}">{{ ad.title }}</a></h2>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>В данной категории нет объявлений.</p>
+  {% endif %}
+{% endblock %}

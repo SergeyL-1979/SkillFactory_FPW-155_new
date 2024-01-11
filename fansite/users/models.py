@@ -1,0 +1,98 @@
+import random
+import string
+
+from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import BaseUserManager
+from django.contrib.auth.validators import UnicodeUsernameValidator
+from django.core.mail import send_mail
+from django.db import models
+
+from django.utils.translation import gettext_lazy as _
+
+
+class UserManager(BaseUserManager):
+
+    def create_user(self, email, first_name, last_name, password=None, **extra_fields):
+        if not email:
+            raise ValueError('Users must have an email address')
+
+        # Генерация временного пароля
+        temp_password = ''.join(random.choices(string.ascii_letters + string.digits, k=12))
+        user = self.model(
+            email=self.normalize_email(email),
+            first_name=first_name,
+            last_name=last_name,
+            activation_code=temp_password,  # Сохранение временного пароля в поле activation_code
+            **extra_fields
+        )
+        user.is_active = False  # для активации пользователя по ссылке надо установить False по умолчанию
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, first_name, last_name, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_active', True)
+        extra_fields.setdefault('is_superuser', True)
+        user = self.model(
+            email=self.normalize_email(email),
+            first_name=first_name,
+            last_name=last_name,
+            password=password,
+            **extra_fields,
+        )
+        user.is_active = True
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def activate_user(self, activation_code):
+        try:
+            user = self.get(activation_code=activation_code)
+            user.is_active = True
+            user.save()
+            return user
+        except self.model.DoesNotExist:
+            return None
+
+
+class CustomUser(AbstractUser):
+    username_validator = UnicodeUsernameValidator()
+    username = models.CharField(
+        _("username"), max_length=150, unique=True, help_text=_(
+            "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
+        ),
+        validators=[username_validator],
+        error_messages={
+            "unique": _("A user with that username already exists."),
+        },
+    )
+    first_name = models.CharField(_("first name"), db_index=True, max_length=150, blank=True)
+    last_name = models.CharField(_("last name"), db_index=True, max_length=150, blank=True)
+    email = models.EmailField(_("email"), db_index=True, max_length=60, unique=True)
+    activation_code = models.CharField(max_length=30, blank=True, verbose_name=_("Код подтверждения"))
+
+    objects = UserManager()
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'username']
+
+    class Meta:
+        verbose_name = _('Пользователь')
+        verbose_name_plural = _('Пользователи')
+        unique_together = ('email',)
+
+    def __str__(self):
+        """ Строковое представление модели (отображается в консоли) """
+        return "{}, ({})".format(self.email, self.get_full_name())
+
+    def get_full_name(self):
+        full_name = '%s %s' % (self.first_name, self.last_name)
+        return full_name.strip() if full_name.strip() else self.email
+
+    def get_short_name(self):
+        return self.first_name if self.first_name else self.email
+
+    def email_user(self, subject, message, from_email=None, **kwargs):
+        send_mail(subject, message, from_email, [self.email], **kwargs)
+

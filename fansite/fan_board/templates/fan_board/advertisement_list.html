@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div>
+        <section>
+        <h2>Добро пожаловать!</h2>
+        <p>Здесь вы найдете последние новости, полезные гайды, общество игроков и многое другое.</p>
+        </section>
+    </div>
+    <div>
+    <h1>Advertisement Categories</h1>
+        <ul>
+          {% for category in cat_list %}
+            <li><a href="{% url 'fan_board:category_ads' category %}">{{ category }}</a>
+          {% endfor %}
+        </ul>
+    </div>
+    <div>
+        <section id="news">
+        <h2>Новости</h2>
+        <p>Последние события в игре и сообществе.</p>
+{#        <!-- Здесь могут быть новости -->{{ ads_list }}#}
+        {% for list in ads_list %}
+            <p><a href="{% url 'fan_board:ads_detail' list.pk %}">{{ list.title }}</a></p>
+{#            <p>{{ list.text|safe|truncatechars:10 }}</p>#}
+        {% endfor %}
+        </section>
+    </div>
+
+{% endblock content %}
