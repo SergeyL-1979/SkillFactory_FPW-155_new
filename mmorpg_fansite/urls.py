@@ -23,11 +23,14 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('ads/', include('fan_board.urls')),
 
-    path('ckeditor/', include('ckeditor_uploader.urls')),
+    # path('ckeditor/', include('ckeditor_uploader.urls')),
     path('account/', include('allauth.urls')),
     path('account/', include('users.urls')),
 ]
 
 if settings.DEBUG:
     # urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += [
+                       path("ckeditor5/", include('django_ckeditor_5.urls'), name="ck_editor_5_upload_file"),
+                   ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

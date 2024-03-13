@@ -3,7 +3,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.urls import reverse
 
-from ckeditor.fields import RichTextField
+from django_ckeditor_5.fields import CKEditor5Field
 
 from users.models import CustomUser
 
@@ -26,7 +26,7 @@ class Advertisement(models.Model):
     # user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, verbose_name='Автор', related_name='advertisements')
     title = models.CharField(max_length=255, verbose_name='Заголовок')
-    text = RichTextField(blank=True, verbose_name='Текст объявления')
+    text = CKEditor5Field(blank=True, verbose_name='Текст объявления')
     # category = models.PositiveSmallIntegerField(choices=Category.choices, verbose_name='Категория')
     category = models.SlugField(max_length=5, choices=Category.choices, verbose_name='Категория')
 
