@@ -8,7 +8,7 @@ class AdvertisementForm(forms.ModelForm):
 
     class Meta:
         model = Advertisement
-        fields = ['title', 'text', 'category']
+        fields = ['headline', 'content', 'ad_category', ]
 
 
 class ResponseForm(forms.ModelForm):

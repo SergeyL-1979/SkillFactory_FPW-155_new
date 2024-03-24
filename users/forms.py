@@ -72,23 +72,37 @@ class UserLoginForm(LoginForm):
 
 
 class UserRegistrationForm(SignupForm):
-    # можно по разному переопределять форму. Так:
-    email = forms.EmailField(widget=forms.TextInput(attrs={'class': 'form-control',
-                                                           "type": "email",
-                                                           "placeholder": "E-mail address",
-                                                           "autocomplete": "email",
-                                                           }))
+    # Можно по-разному переопределять форму. Так:
+    email = forms.EmailField(
+        widget=forms.TextInput(attrs={'class': 'form-control',
+                                      "type": "email",
+                                      "placeholder": "E-mail address",
+                                      "autocomplete": "email",
+                                      }))
     # Добавьте свои поля, если необходимо
-    first_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control',
-                                                               "placeholder": "First",
-                                                               "autocomplete": "first_name",
-                                                               "type": "first_name"}))
-    last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control',
-                                                              "placeholder": "Last",
-                                                              "type": "last_name",
-                                                              "autocomplete": "last_name"}))
+    first_name = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control',
+                                      "placeholder": "First",
+                                      "autocomplete": "first_name",
+                                      "type": "first_name"}))
+    last_name = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control',
+                                      "placeholder": "Last",
+                                      "type": "last_name",
+                                      "autocomplete": "last_name"}))
 
-    def save(self, request):
+    class Meta:
+        model = CustomUser
+        fields = ('email', 'first_name', 'last_name', 'password')
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if CustomUser.objects.filter(username=email.split('@')[0]).exists():
+            raise ValidationError("This username is already taken.")
+        return email
+
+    def save(self, request, commit=True):
+        # Сначала вызываем метод save родительского класса
         user = super(UserRegistrationForm, self).save(request)
         # Генерация временного пароля и сохранение в поле activation_code
         temp_password = ''.join(random.choices(string.ascii_letters + string.digits, k=12))
@@ -97,22 +111,12 @@ class UserRegistrationForm(SignupForm):
         subject = 'Активация аккаунта'
         message = f'Для активации вашего аккаунта используйте временный пароль: {temp_password}'
         user.email_user(subject, message)
-        user.save()
-        return user
 
-    # @login_required
-    # def send_activation_email(self, request):
-    #     user = request.user
-    #     subject = 'Активация учетной записи MMORPG'
-    #     message = f'''
-    #         Здравствуйте!
-    #
-    #         Вы зарегистрированы в сервисе MMORPG.
-    #         Реквизиты для доступа в личный кабинет: https://example.com/
-    #
-    #         login: {user.email}
-    #         password: {user.password}
-    #     '''
-    #     from_email = 'your-email@example.com'
-    #     send_mail(subject, message, from_email, [user.email])
-    #     return redirect('profile')
+        # Затем сохраняем дополнительные данные
+        user.first_name = self.cleaned_data['first_name']
+        user.last_name = self.cleaned_data['last_name']
+        user.username = self.cleaned_data['email'].split('@')[0]
+        # user.save()
+        if commit:
+            user.save()
+        return user

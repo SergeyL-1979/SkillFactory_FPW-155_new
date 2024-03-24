@@ -21,7 +21,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('ads/', include('fan_board.urls')),
+    path('mmorpg/', include('fan_board.urls')),
 
     # path('ckeditor/', include('ckeditor_uploader.urls')),
     path('account/', include('allauth.urls')),
