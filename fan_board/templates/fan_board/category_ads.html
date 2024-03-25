@@ -2,23 +2,27 @@
 
 {% block content %}
 
+<div class="content">
+    <div class="col-md-6">
+        <h1 class="fw-bolder mb-1">{{ category_name }}</h1>
+    </div>
 
-<div class="col-md-6">
-  <h1 class="fw-bolder mb-1">{{ category_name }}</h1>
-</div>
-
-<div class="col-sm-6">
-    {% if cat_list %}
-        <ul class="text content">
-            {% for ad in cat_list %}
-                <li class="list-group-item">
-                    <h2><a href="{% url 'fan_board:ads_detail' ad.pk %}">{{ ad.headline }}</a></h2>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>В данной категории нет объявлений.</p>
-    {% endif %}
+    <div class="col-sm-6">
+        {% if cat_list %}
+            <ul class="text content">
+                {% for ad in cat_list %}
+                    <li class="list-group-item">
+                        <h2><a href="{% url 'fan_board:ads_detail' ad.headline %}">{{ ad.headline }}</a></h2>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>В данной категории нет объявлений.</p>
+        {% endif %}
+    </div>
+    <div>
+        <button onclick="history.back()">Назад</button>
+    </div>
 </div>
 
 

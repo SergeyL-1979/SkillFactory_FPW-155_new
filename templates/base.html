@@ -27,7 +27,8 @@
         }
 
         .content {
-            flex: 1;
+            {#flex: 1;#}
+            flex: 10 10 auto;
         }
 
         header {
@@ -61,20 +62,40 @@
             padding: 10px;
             text-align: center;
         }
+        
+        .ad-detail, .ads {
+            color: #1b1b1b;
+            margin: auto auto auto 50%;
+        }
+        .ads {
+            margin: auto 250px;
+        }
+        .category {
+            font-style: italic;
+        }
+        
+        .ad-text {
+            margin-top: 10px;
+        }
+        
+        .author {
+            margin-top: 10px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
-
+{% block header %}
     <header>
         <h1>Добро пожаловать на наш фан-сайт по MMORPG!</h1>
     </header>
-
+{% endblock header %}
     <nav>
         <a class="nav-link" href="/mmorpg/">Главная</a>
-        <a class="nav-link" href="#news">Новости</a>
-        <a class="nav-link" href="#guides">Гайды</a>
-        <a class="nav-link" href="#community">Сообщество</a>
-        <a href="#about">О нас</a>
+        <a class="nav-link" href="">Новости</a>
+        <a class="nav-link" href="">Гайды</a>
+        <a class="nav-link" href="">Сообщество</a>
+        <a href="">О нас</a>
         {% if request.user.is_authenticated %}
         <a class="nav-link" href="">Мои посты</a>
         <a class="nav-link" href="{% url 'fan_board:ads_create' %}"> Написать объявление </a>

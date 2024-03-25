@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count
 from django.http import Http404
+from django.urls import reverse
 from django.shortcuts import render, get_object_or_404
 from django.views import generic
 from django.core.mail import send_mail
@@ -43,12 +44,38 @@ class AdListView(generic.ListView):
         return context
 
 
+# class AdDetailView(generic.DetailView):
+#     model = Advertisement
+#     context_object_name = 'ads_detail'
+#     slug_field = 'headline'
+#     slug_url_kwarg = 'headline'
+#
+#     def get_context_data(self, **kwargs):
+#         context = super(AdDetailView, self).get_context_data(**kwargs)
+#         context['ads_list'] = Advertisement.objects.all()
+#         return context
 class AdDetailView(generic.DetailView):
+    """ View for displaying a single advertisement. """
     model = Advertisement
     context_object_name = 'ads_detail'
+    template_name = 'fan_board/advertisement_detail.html'
+
+    def get_object(self, queryset=None):
+        """ Retrieve and return the object the view is displaying. """
+        if queryset is None:
+            queryset = self.get_queryset()
+
+        # Получаем значение из URL и используем его для фильтрации объявлений
+        headline = self.kwargs.get('headline')
+        return get_object_or_404(queryset, headline=headline)
 
     def get_context_data(self, **kwargs):
-        context = super(AdDetailView, self).get_context_data(**kwargs)
+        """
+        A method to retrieve and return the context data for the view.
+        This method takes in keyword arguments (**kwargs) and returns
+        a dictionary containing the context data.
+        """
+        context = super().get_context_data(**kwargs)
         context['ads_list'] = Advertisement.objects.all()
         return context
 
@@ -56,68 +83,48 @@ class AdDetailView(generic.DetailView):
 class AdCreateView(generic.CreateView):
     model = Advertisement
     form_class = AdvertisementForm
-    success_url = '/ads/'
-
-    """ Функция для кастомный валидации полей формы модели """
 
     def form_valid(self, form):
-        # Создаем форму, но не отправляем его в БД, пока просто держим в памяти
-        fields = form.save(commit=False)
-        # Через request передаем недостающую форму, которая обязательно
-        # делаем на моменте авторизации и создании прав стать автором
-        fields.user = self.request.user
-        """ Наконец сохраняем в БД """
-        fields.save()
+        form.instance.ad_author = self.request.user
         return super().form_valid(form)
 
-# class ResponseListView(generic.ListView):
-#     model = Response
-#     context_object_name = 'responses_list'
-#
-#     def get_context_data(self, **kwargs):
-#         context = super(ResponseListView, self).get_context_data(**kwargs)
-#         context['responses_list'] = Response.objects.all()
+    def get_success_url(self):
+        # Получаем созданный объект объявления
+        created_ad = self.object
+        # Формируем URL на основе заголовка объявления
+        return reverse('fan_board:ads_detail', kwargs={'headline': created_ad.headline})
 
 
-# class AdvertisementController:
-#     def create_advertisement(self, request):
-#         # Implement logic for creating advertisements
-#         pass
-#
-#     def edit_advertisement(self, request, ad_id):
-#         # Implement logic for editing advertisements
-#         pass
-#
-#     def delete_advertisement(self, request, ad_id):
-#         # Implement logic for deleting advertisements
-#         pass
-#
-#
-# class ResponseController:
-#     def respond_to_advertisement(self, request, ad_id):
-#         # Implement logic for responding to advertisements
-#         pass
-#
-#     def private_page(self, request):
-#         # Implement logic for the private page with responses
-#         pass
-#
-#     def send_response_notification(self, user, advertisement):
-#         # Implement logic for sending email notification to the user
-#         pass
+class AdUpdateView(generic.UpdateView):
+    model = Advertisement
+    form_class = AdvertisementForm
+    # success_url = '/mmorpg/'
+
+    def form_valid(self, form):
+        form.instance.ad_author = self.request.user
+        return super().form_valid(form)
+
+    def get_object(self, queryset=None):
+        # Получаем значение заголовка из адресной строки
+        headline = self.kwargs.get('headline')
+        # Получаем объект объявления по заголовку
+        obj = Advertisement.objects.get(headline=headline)
+        return obj
+
+    def get_success_url(self):
+        # Получаем созданный объект объявления
+        created_ad = self.object
+        # Формируем URL на основе заголовка объявления
+        return reverse('fan_board:ads_detail', kwargs={'headline': created_ad.headline})
 
 
-# def create_advertisement(request):
-#     # Implement logic for creating advertisements
-#
-# def edit_advertisement(request, ad_id):
-#     # Implement logic for editing advertisements
-#
-# def delete_advertisement(request, ad_id):
-#     # Implement logic for deleting advertisements
-#
-# def respond_to_advertisement(request, ad_id):
-#     # Implement logic for responding to advertisements
-#
-# def private_page(request):
-#     # Implement logic for the private page with responses
+class AdDeleteView(generic.DeleteView):
+    model = Advertisement
+    success_url = '/mmorpg/'
+
+    def get_object(self, queryset=None):
+        # Получаем значение заголовка из адресной строки
+        headline = self.kwargs.get('headline')
+        # Получаем объект объявления по заголовку
+        obj = Advertisement.objects.get(headline=headline)
+        return obj

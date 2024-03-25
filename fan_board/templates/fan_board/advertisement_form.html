@@ -2,13 +2,14 @@
 {% load static %}
 
 {% block content %}
-<div>
-    <form method="post" enctype="multipart/form-data">
-      {% csrf_token %}
-      {{ form.as_p }}
-      {{form.media}}
-      <button type="submit">Submit</button>
-    </form>
-</div>
-
+    
+    <div>
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{ form.as_p }}
+          {{form.media}}
+          <button type="submit" class="btn cke_btn_over">Сохранить</button>
+        </form>
+    </div>
+    
 {% endblock content %}
