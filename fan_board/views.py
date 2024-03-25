@@ -7,8 +7,8 @@ from django.views import generic
 from django.core.mail import send_mail
 from django.views.generic import FormView
 
-from .models import Advertisement, Response, Category
-from .forms import AdvertisementForm, ResponseForm
+from fan_board.models import Advertisement, Response, Category
+from fan_board.forms import AdvertisementForm, ResponseForm
 
 
 class CategoryAdsView(generic.ListView):
@@ -28,7 +28,8 @@ class AdListView(generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super(AdListView, self).get_context_data(**kwargs)
-        context['cat_list'] = [category[1] for category in Category.choices]
+        # context['cat_list'] = [category[1] for category in Category.choices]
+        context['cat_list'] = Category.objects.all()
         return context
 
 

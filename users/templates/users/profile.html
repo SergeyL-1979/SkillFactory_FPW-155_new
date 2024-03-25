@@ -46,14 +46,14 @@
             <td class="td_profile">ID номер</td>
             <td class="td_profile h6">{{ user.id }}</td>
         </tr>
-        <tr>
-            <td class="td_profile">"Подписки" </td>
-            <td class="td_profile h6">{{ category }}</td>
-        </tr>
-        <tr>
-            <td class="td_profile">"Activation Code</td>
-            <td class="td_profile h6">{{ user.activation_code }}</td>
-        </tr>
+{#        <tr>#}
+{#            <td class="td_profile">"Подписки" </td>#}
+{#            <td class="td_profile h6">{{ category }}</td>#}
+{#        </tr>#}
+{#        <tr>#}
+{#            <td class="td_profile">"Activation Code</td>#}
+{#            <td class="td_profile h6">{{ user.activation_code }}</td>#}
+{#        </tr>#}
     </table>
     <br>
     <a class="btn btn-success " style="float: inherit" href="{% url 'users:edit_profile' user.pk  %}">Редактировать профиль</a>

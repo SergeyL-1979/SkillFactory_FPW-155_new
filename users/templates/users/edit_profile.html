@@ -1,4 +1,4 @@
-{#{% extends "board/base.html" %}#}
+{% extends "base.html" %}
 {#{% load i18n %}#}
 
 <head>
@@ -18,7 +18,7 @@
 {% block add_category %}
 {%endblock add_category %}
 
-{% block body %}
+{% block content %}
 
     <div style="text-align:left" class="col-md-5">
         <h2>Редактировать профиль</h2><br>
@@ -29,4 +29,4 @@
         </form>
     </div>
 
-{%endblock%}
+{% endblock content %}

@@ -5,7 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import UpdateView, DetailView
 from django.contrib import messages
 from django.urls import reverse_lazy, reverse
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import redirect, get_object_or_404, render
 
 from users.models import CustomUser
 from users.forms import UserForm
@@ -19,13 +19,6 @@ class UserProfile(LoginRequiredMixin, DetailView):
     model = CustomUser
     template_name = 'users/profile.html'
     context_object_name = 'profile'
-    # login_url = '/account/login/'
-    # slug_field = 'username'  # Используйте поле, которое вы используете как слаг в модели CustomUser
-    # slug_url_kwarg = 'slug'
-
-    # def get(self, request, *args, **kwargs):
-    #     logger.info(f"Request to UserProfile view:{args} {kwargs}")
-    #     return super().get(request, *args, **kwargs)
 
     def get_object(self, **kwargs):
         return self.request.user
@@ -55,15 +48,14 @@ class UserProfileEdit(LoginRequiredMixin, UpdateView):
     """Кабинет пользователя"""
     form_class = UserForm
     template_name = 'users/edit_profile.html'
-    # success_url = reverse_lazy('profile')
-    # success_url = reverse_lazy('profile', kwargs={'pk': user.pk })
     login_url = '/account/login/'
 
     def get_object(self, **kwargs):
-        # return get_object_or_404(CustomUser, email=self.request.GET.get('pk'))
         pk = self.kwargs.get('pk')  # Получаем 'pk' из URL-параметра
         return get_object_or_404(CustomUser, pk=pk)
 
     def get_success_url(self):
         user = self.get_object()
         return reverse_lazy('users:profile')
+
+
