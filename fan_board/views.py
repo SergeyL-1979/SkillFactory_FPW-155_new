@@ -18,6 +18,18 @@ class CategoryAdsView(generic.ListView):
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
 
+    def get_context_data(self, **kwargs):
+        # id = self.kwargs.get('pk')
+        context = super().get_context_data(**kwargs)
+        " Контекст отображение категорий в выпадающем статус баре "
+        context['category_name'] = Category.objects.all()
+        # context['category_name'] = self.category
+        # " Контекст для списка постов в текущей категории. "
+        # context['ad_category'] = Advertisement.objects.filter(ad_category=id)
+        # " Контекст постов данной категории. "
+        # context['post_category'] = PostCategory.objects.get(post=self.kwargs['pk']).category
+        return context
+
 
 class AdListView(generic.ListView):
     model = Advertisement
@@ -49,6 +61,7 @@ class AdCreateView(generic.CreateView):
     success_url = '/ads/'
 
     """ Функция для кастомный валидации полей формы модели """
+
     def form_valid(self, form):
         # Создаем форму, но не отправляем его в БД, пока просто держим в памяти
         fields = form.save(commit=False)
@@ -59,7 +72,6 @@ class AdCreateView(generic.CreateView):
         fields.save()
         return super().form_valid(form)
 
-
 # class ResponseListView(generic.ListView):
 #     model = Response
 #     context_object_name = 'responses_list'
@@ -67,18 +79,6 @@ class AdCreateView(generic.CreateView):
 #     def get_context_data(self, **kwargs):
 #         context = super(ResponseListView, self).get_context_data(**kwargs)
 #         context['responses_list'] = Response.objects.all()
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 # class AdvertisementController:
@@ -123,4 +123,3 @@ class AdCreateView(generic.CreateView):
 #
 # def private_page(request):
 #     # Implement logic for the private page with responses
-

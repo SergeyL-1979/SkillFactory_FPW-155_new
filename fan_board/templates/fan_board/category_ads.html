@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>{{ cat_list.0.get_category_display }}</h1>
   <h1>{{ category_name }}</h1>
+{{ ad_category.headline }}
 {{ ads_list }}
   {% if ads_list %}
     <ul>
