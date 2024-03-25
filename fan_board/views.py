@@ -18,16 +18,14 @@ class CategoryAdsView(generic.ListView):
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
 
+    def get_queryset(self):
+        # category = get_object_or_404(Category, name=self.kwargs['slug'])
+        # return Advertisement.objects.filter(ad_category=category)
+        return Advertisement.objects.filter(ad_category__name=self.kwargs['slug'])
+
     def get_context_data(self, **kwargs):
-        # id = self.kwargs.get('pk')
         context = super().get_context_data(**kwargs)
-        " Контекст отображение категорий в выпадающем статус баре "
-        context['category_name'] = Category.objects.all()
-        # context['category_name'] = self.category
-        # " Контекст для списка постов в текущей категории. "
-        # context['ad_category'] = Advertisement.objects.filter(ad_category=id)
-        # " Контекст постов данной категории. "
-        # context['post_category'] = PostCategory.objects.get(post=self.kwargs['pk']).category
+        context['category_name'] = get_object_or_404(Category, name=self.kwargs['slug'])
         return context
 
 

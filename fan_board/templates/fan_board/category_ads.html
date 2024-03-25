@@ -1,18 +1,27 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>{{ category_name }}</h1>
-{{ ad_category.headline }}
-{{ ads_list }}
-  {% if ads_list %}
-    <ul>
-      {% for ad in ads_list %}
-        <li>
-          <h2><a href="{% url 'fan_board:ads_detail' ad.pk %}">{{ ad.title }}</a></h2>
-        </li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p>В данной категории нет объявлений.</p>
-  {% endif %}
-{% endblock %}
+
+
+<div class="col-md-6">
+  <h1 class="fw-bolder mb-1">{{ category_name }}</h1>
+</div>
+
+<div class="col-sm-6">
+    {% if cat_list %}
+        <ul class="text content">
+            {% for ad in cat_list %}
+                <li class="list-group-item">
+                    <h2><a href="{% url 'fan_board:ads_detail' ad.pk %}">{{ ad.headline }}</a></h2>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>В данной категории нет объявлений.</p>
+    {% endif %}
+</div>
+
+
+
+
+{% endblock content %}
