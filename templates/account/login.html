@@ -11,24 +11,6 @@
                 <!-- login.html -->
                 <form action="{% url 'users:login' %}" method="post">
                     {% csrf_token %}
-{#                    {{ form.as_p }}#}
-{#                    {% if request.GET.next %}#}
-{#                        <input type="hidden" name="next" value="{{ request.GET.next }}">#}
-{#                    {% endif %}#}
-
-{#                    <div class="mb-3" style="margin-bottom: 15px">#}
-{#                        <label for="id_email" class="form-label">Email</label>#}
-{#                        <input type="email" class="form-control" name="email" id="id_email"#}
-{#                               value="{% if form.email.value %}{{ form.email.value }}{% endif %}"#}
-{#                               placeholder="Введите ваш email" required>#}
-{#                    </div>#}
-{##}
-{#                    <div class="mb-3" style="margin-bottom: 15px">#}
-{#                        <label for="id_password" class="form-label">Пароль</label>#}
-{#                        <input type="password" class="form-control" name="password" id="id_password"#}
-{#                               placeholder="Введите ваш пароль" required>#}
-{#                    </div>#}
-
                     {% for field in form.visible_fields %}
                         <div class="mb-3" style="margin-bottom: 15px">
                             <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
