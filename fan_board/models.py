@@ -37,6 +37,21 @@ class Category(models.Model):
 # ===== СИГНАЛ ДЛЯ СОЗДАНИЯ КАТЕГОРИЙ ПОСЛЕ МИГРАЦИИ =========
 @receiver(post_migrate)
 def create_initial_categories(sender, **kwargs):
+    """
+    Create initial categories after a migration is applied.
+
+    This function is a signal receiver that is triggered after a migration is applied.
+    It checks if the sender's name is "fan_board" and if so, it creates initial categories
+    by iterating over a list of category names. For each category name, it calls the
+    `get_or_create` method of the `Category` model to create or retrieve the category.
+
+    Parameters:
+        sender (Any): The sender of the signal.
+        **kwargs (Any): Additional keyword arguments.
+
+    Returns:
+        None
+    """
     if sender.name == "fan_board":
         categories = ['Tanks', 'Healers', 'Damage Dealers', 'Merchants',
                       'Guild masters', 'Quest givers', 'Blacksmiths', 'Tanners',
