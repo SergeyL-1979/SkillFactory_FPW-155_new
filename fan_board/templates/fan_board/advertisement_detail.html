@@ -22,7 +22,30 @@
             </form>
             <button onclick="window.location.href='{% url 'fan_board:ads_list' %}'">Назад</button>
         </div>
-    
+        <hr>
+        <div class="response">
+            <strong>Response</strong>
+            {% if ad_response %}
+            {% for response in ad_response %}
+                <p>{{ response.text }}</p>
+                <p>{{ response.user_answer }}</p>
+            {% endfor %}
+            {% else %}
+                <h3>NO RESPONSE</h3>
+            {% endif %}
+        </div>
+        <hr>
+        <div>
+        <h2> Добавить новый комментарий </h2>
+            <form style="text-align: center;" method="post">
+                {% csrf_token %}
+                {% for f in form %}
+                <p><label class="form-label" for="{{f.ai_for_label}}">{{f.label}}: </label> {{ f }} </p>
+                <div class="form-error">{{ f.errors }}</div>
+                {% endfor %}
+                <input type="submit" value="Submit">
+            </form>
+        </div>
     </div>
     
 

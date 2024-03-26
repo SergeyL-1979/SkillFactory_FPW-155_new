@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count
 from django.http import Http404
 from django.urls import reverse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
 from django.core.mail import send_mail
 from django.views.generic import FormView
@@ -59,6 +59,7 @@ class AdDetailView(generic.DetailView):
     model = Advertisement
     context_object_name = 'ads_detail'
     template_name = 'fan_board/advertisement_detail.html'
+    form_class = ResponseForm
 
     def get_object(self, queryset=None):
         """ Retrieve and return the object the view is displaying. """
@@ -77,7 +78,23 @@ class AdDetailView(generic.DetailView):
         """
         context = super().get_context_data(**kwargs)
         context['ads_list'] = Advertisement.objects.all()
+        context['ad_response'] = Response.objects.filter(ad=self.get_object())
+        context['form'] = self.form_class()
         return context
+
+    def post(self, request, *args, **kwargs):
+        """ Handle POST requests. """
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            # Сохраняем отклик в базу данных
+            response = form.save(commit=False)
+            response.ad = self.get_object()
+            response.user_answer = request.user
+            response.save()
+            return redirect('fan_board:ads_detail', headline=self.get_object().headline)
+        else:
+            # Если форма не допустима, повторно отображаем страницу с формой и ошибками
+            return self.render_to_response(self.get_context_data(form=form))
 
 
 class AdCreateView(generic.CreateView):
@@ -128,3 +145,4 @@ class AdDeleteView(generic.DeleteView):
         # Получаем объект объявления по заголовку
         obj = Advertisement.objects.get(headline=headline)
         return obj
+

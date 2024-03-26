@@ -53,17 +53,6 @@ class Advertisement(models.Model):
     content = CKEditor5Field(blank=True, null=True, verbose_name='Описание')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата публикации')
 
-    # user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Автор')
-    # user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор')
-
-    # post_author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Автор',)
-    # date_create = models.DateField(auto_now_add=True, verbose_name='Дата публикации',)
-    # headline = models.CharField(max_length=255, null=False, verbose_name='Заголовок',)
-    # content = RichTextField(blank=True, null=True,)
-    # responses = models.ManyToManyField(CustomUser, related_name='post_responses',)
-    # accepted_responses = models.ManyToManyField(CustomUser, related_name='post_accepted_responses',)
-    # post_category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='Категория',)
-
     class Meta:
         verbose_name = 'Объявление'
         verbose_name_plural = 'Объявления'
@@ -80,10 +69,15 @@ class Advertisement(models.Model):
 class Response(models.Model):
     ad = models.ForeignKey(Advertisement, on_delete=models.CASCADE)
     text = models.TextField()
+    user_answer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+                                    related_name='answer', verbose_name='Автор отклика')
+    accepted_answer = models.BooleanField(default=False, verbose_name='Принять отклик')
+    notified = models.BooleanField(default=False, verbose_name='Уведомлен')
     created_at = models.DateTimeField(auto_now_add=True)
-    answer = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='answer', verbose_name='Опубликовать ответ')
-    accepted_answer = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='accepted_answer',
-                                             verbose_name='Принятый ответ')
+    # answer = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='answer',
+    # verbose_name='Опубликовать ответ')
+    # accepted_answer = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='accepted_answer',
+    #                                          verbose_name='Принятый ответ')
 
     def __str__(self):
         return f'{self.text}'
@@ -93,75 +87,15 @@ class Response(models.Model):
         verbose_name_plural = 'Отклики'
 
 
-class PrivatePage(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Пользователь')
-    response = models.ForeignKey(Response, models.CASCADE, verbose_name='Отклик')
-
-    # user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Пользователь')
-    # user = models.OneToOneField(User, on_delete=models.CASCADE)
-
-    class Meta:
-        verbose_name = 'Приват'
-        verbose_name_plural = 'Приват'
-
-# ================= СТАРЫЕ НАСТРОЙКИ ==================================
-# User = get_user_model()
-# class Category(models.IntegerChoices):
-#     Tanks = 1, 'Tanks'
-#     Healers = 2, 'Healers'
-#     DD = 3, 'Damage Dealers'
-#     Merchants = 4, 'Merchants'
-#     GuildMasters = 5, 'Guild masters'
-#     QuestGivers = 6, 'Quest givers'
-#     Blacksmiths = 7, 'Blacksmiths'
-#     Tanners = 8, 'Tanners'
-#     Potions_Masters = 9, 'Potions Masters'
-#     Spell_Masters = 10, 'Spell Masters'
-
-
-# class Advertisement(models.Model):
-#     # user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-#     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, verbose_name='Автор', related_name='advertisements')
-#     title = models.CharField(max_length=255, verbose_name='Заголовок')
-#     text = CKEditor5Field(blank=True, verbose_name='Текст объявления')
-#     # category = models.PositiveSmallIntegerField(choices=Category.choices, verbose_name='Категория')
-#     category = models.SlugField(max_length=5, choices=Category.choices, verbose_name='Категория')
+# class PrivatePage(models.Model):
+#     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Пользователь')
+#     response = models.ForeignKey(Response, models.CASCADE, verbose_name='Отклик')
 #
-#     # category = models.CharField(max_length=50, choices=[
-#     #     ('Tanks', 'Tanks'),
-#     #     ('Healers', 'Healers'),
-#     #     ('DD', 'Damage Dealers'),
-#     #     ('Merchants', 'Merchants'),
-#     #     ('Guild masters', 'Guild masters'),
-#     #     ('Quest givers', 'Quest givers'),
-#     #     ('Blacksmiths', 'Blacksmiths'),
-#     #     ('Tanners', 'Tanners'),
-#     #     ('Potions Masters', 'Potions Masters'),
-#     #     ('Spell Masters', 'Spell Masters'),
-#     # ])
+#     # user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Пользователь')
+#     # user = models.OneToOneField(User, on_delete=models.CASCADE)
 #
 #     class Meta:
-#         verbose_name = 'Объявление'
-#         verbose_name_plural = 'Объявления'
-#
-#     def __str__(self):
-#         """ Строковое отображение поста """
-#         return f'{self.title}'
-#
-#     def get_absolute_url(self):
-#         """ Получить ссылку на объект """
-#         return reverse('ads_detail', kwargs={'pk': self.pk})
-#
-#
-# class Response(models.Model):
-#     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-#     advertisement = models.ForeignKey(Advertisement, on_delete=models.CASCADE)
-#     text = models.TextField()
-#     accepted = models.BooleanField(default=False)
-#
-#     class Meta:
-#         verbose_name = 'Ответ'
-#         verbose_name_plural = 'Ответы'
-#
-#     def __str__(self):
-#         return f'{self.text}'
+#         verbose_name = 'Приват'
+#         verbose_name_plural = 'Приват'
+
+
