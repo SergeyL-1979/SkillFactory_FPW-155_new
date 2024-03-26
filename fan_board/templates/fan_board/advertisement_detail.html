@@ -2,7 +2,9 @@
 
 {% block content %}
     
+    
     <div class="content">
+    
         <div class="col-lm-6 col-lx-6">
             <h1 class="ad-detail">{{ ads_detail.headline }}</h1>
             <div class="ads">
@@ -13,29 +15,12 @@
         </div>
     
         <div>
-            <button class="cke_btn_over" onclick="window.location.href='{% url 'fan_board:ads_update' ads_detail.headline %}'">Редактировать</button>
+            <button onclick="window.location.href='{% url 'fan_board:ads_update' ads_detail.headline %}'">Редактировать</button>
             <form method="post" action="{% url 'fan_board:ads_delete' ads_detail.headline %}" style="display:inline;">
                 {% csrf_token %}
-                <button type="submit">Удалить</button>
+                <button type="submit" >Удалить</button>
             </form>
-            <button onclick="goBack()">Назад</button>
-
-        <script>
-            function goBack() {
-                var currentURL = window.location.href;
-                var editURL = "{% url 'fan_board:ads_update' ads_detail.headline %}";
-                var detailURL = "{% url 'fan_board:ads_detail' ads_detail.headline %}";
-        
-                // Проверяем, если текущий URL соответствует URL страницы редактирования
-                if (currentURL === editURL) {
-                    // Если текущий URL соответствует URL страницы редактирования, возвращаем пользователя на предыдущую страницу
-                    window.location.href = detailURL;
-                } else {
-                    // Иначе просто возвращаем пользователя на предыдущую страницу
-                    history.back();
-                }
-            }
-        </script>  
+            <button onclick="window.location.href='{% url 'fan_board:ads_list' %}'">Назад</button>
         </div>
     
     </div>
