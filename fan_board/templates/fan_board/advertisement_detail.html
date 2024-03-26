@@ -1,52 +1,48 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    
-    
     <div class="content">
-    
-        <div class="col-lm-6 col-lx-6">
-            <h1 class="ad-detail">{{ ads_detail.headline }}</h1>
-            <div class="ads">
-                <p class="category"><strong>Категория: </strong>{{ ads_detail.ad_category }}</p>
-                <p class="ad-text">Текст объявления: {{ ads_detail.content|safe }}</p>
-                <p class="author">Автор: {{ ads_detail.ad_author.first_name }}</p>
+        <div class="ad-details">
+            <div class="ad-info">
+                <h1 class="ad-detail">{{ ads_detail.headline }}</h1>
+                <div class="ads">
+                    <p class="category"><strong>Категория: </strong>{{ ads_detail.ad_category }}</p>
+                    <p class="ad-text">Текст объявления: {{ ads_detail.content|safe }}</p>
+                    <p class="author">Автор: {{ ads_detail.ad_author.first_name }}</p>
+                </div>
             </div>
-        </div>
-    
-        <div>
-            <button onclick="window.location.href='{% url 'fan_board:ads_update' ads_detail.headline %}'">Редактировать</button>
-            <form method="post" action="{% url 'fan_board:ads_delete' ads_detail.headline %}" style="display:inline;">
-                {% csrf_token %}
-                <button type="submit" >Удалить</button>
-            </form>
-            <button onclick="window.location.href='{% url 'fan_board:ads_list' %}'">Назад</button>
+            <div class="ad-actions">
+                <button onclick="window.location.href='{% url 'fan_board:ads_update' ads_detail.headline %}'">Редактировать</button>
+                <form method="post" action="{% url 'fan_board:ads_delete' ads_detail.headline %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" >Удалить</button>
+                </form>
+                <button onclick="window.location.href='{% url 'fan_board:ads_list' %}'">Назад</button>
+            </div>
         </div>
         <hr>
         <div class="response">
-            <strong>Response</strong>
+            <strong>Ответы</strong>
             {% if ad_response %}
-            {% for response in ad_response %}
-                <p>{{ response.text }}</p>
-                <p>{{ response.user_answer }}</p>
-            {% endfor %}
+                {% for response in ad_response %}
+                    <p>{{ response.text }}</p>
+                    <p>{{ response.user_answer }}</p>
+                {% endfor %}
             {% else %}
-                <h3>NO RESPONSE</h3>
+                <h3>Нет ответов</h3>
             {% endif %}
         </div>
         <hr>
-        <div>
-        <h2> Добавить новый комментарий </h2>
-            <form style="text-align: center;" method="post">
+        <div class="comment-form">
+            <h2>Добавить новый комментарий</h2>
+            <form method="post">
                 {% csrf_token %}
-                {% for f in form %}
-                <p><label class="form-label" for="{{f.ai_for_label}}">{{f.label}}: </label> {{ f }} </p>
-                <div class="form-error">{{ f.errors }}</div>
+                {% for field in form %}
+                    <p><label for="{{ field.id_for_label }}">{{ field.label }}: </label>{{ field }}</p>
+                    <div class="form-error">{{ field.errors }}</div>
                 {% endfor %}
-                <input type="submit" value="Submit">
+                <input type="submit" value="Отправить">
             </form>
         </div>
     </div>
-    
-
 {% endblock %}

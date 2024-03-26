@@ -31,6 +31,19 @@ class AdvertisementForm(forms.ModelForm):
 
 
 class ResponseForm(forms.ModelForm):
+
     class Meta:
         model = Response
         fields = ['text']
+        widgets = {
+            'text': forms.Textarea(
+                attrs={
+                    'class': 'form-control',
+                    'rows': 5, 'placeholder': 'Введите ваш отклик здесь не менее 10 символов',
+                }
+            ),
+        }
+        labels = {
+            'text': 'Отклик',
+        }
+
