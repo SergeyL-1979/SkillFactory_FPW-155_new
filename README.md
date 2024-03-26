@@ -7,7 +7,7 @@
 
 ```python
     python manage.py migrate
-    python manage.py loaddata fixtures/category.json
+    python manage.py create_superuser
     python manage.py runserver
 ```
 ## Техническое задание на проверку знаний.
