@@ -97,7 +97,7 @@ class AdDetailView(generic.DetailView):
             return self.render_to_response(self.get_context_data(form=form))
 
 
-class AdCreateView(generic.CreateView):
+class AdCreateView(LoginRequiredMixin, generic.CreateView):
     model = Advertisement
     form_class = AdvertisementForm
 
@@ -112,9 +112,10 @@ class AdCreateView(generic.CreateView):
         return reverse('fan_board:ads_detail', kwargs={'headline': created_ad.headline})
 
 
-class AdUpdateView(generic.UpdateView):
+class AdUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Advertisement
     form_class = AdvertisementForm
+
     # success_url = '/mmorpg/'
 
     def form_valid(self, form):
@@ -135,7 +136,7 @@ class AdUpdateView(generic.UpdateView):
         return reverse('fan_board:ads_detail', kwargs={'headline': created_ad.headline})
 
 
-class AdDeleteView(generic.DeleteView):
+class AdDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Advertisement
     success_url = '/mmorpg/'
 
@@ -145,4 +146,3 @@ class AdDeleteView(generic.DeleteView):
         # Получаем объект объявления по заголовку
         obj = Advertisement.objects.get(headline=headline)
         return obj
-
