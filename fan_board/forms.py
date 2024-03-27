@@ -39,7 +39,9 @@ class ResponseForm(forms.ModelForm):
             'text': forms.Textarea(
                 attrs={
                     'class': 'form-control',
-                    'rows': 5, 'placeholder': 'Введите ваш отклик здесь не менее 10 символов',
+                    'rows': 5,
+                    'cols': 50,
+                    'placeholder': 'Введите ваш отклик здесь не менее 10 символов',
                 }
             ),
         }
