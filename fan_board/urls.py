@@ -13,4 +13,6 @@ urlpatterns = [
     path('delete/<str:headline>/', views.AdDeleteView.as_view(), name='ads_delete'),
 
     path('category/<str:slug>/', views.CategoryAdsView.as_view(), name='category_ads'),
+
+    path('mark-notification-as-read/', views.mark_notification_as_read, name='mark_notification_as_read'),
 ]

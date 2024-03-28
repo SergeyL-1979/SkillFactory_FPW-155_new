@@ -1,7 +1,8 @@
+import logging
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.urls import reverse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
@@ -10,6 +11,9 @@ from django.views.generic import FormView
 
 from fan_board.models import Advertisement, Response, Category
 from fan_board.forms import AdvertisementForm, ResponseForm
+
+
+logger = logging.getLogger(__name__)
 
 
 class CategoryAdsView(generic.ListView):
@@ -146,3 +150,12 @@ class AdDeleteView(LoginRequiredMixin, generic.DeleteView):
         # Получаем объект объявления по заголовку
         obj = Advertisement.objects.get(headline=headline)
         return obj
+
+
+def mark_notification_as_read(request):
+    if request.method == 'POST':
+        logger.debug('POST request received')
+        # ваша логика здесь
+    else:
+        logger.error('Invalid request method')
+

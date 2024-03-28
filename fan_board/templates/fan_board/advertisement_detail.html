@@ -30,7 +30,7 @@
             {% if ad_response %}
                 {% for response in ad_response %}
                     <p>{{ response.text }}</p>
-                    <p>{{ response.user_answer }}</p>
+                    <p>Author: {{ response.user_answer.first_name }}</p>
                 {% endfor %}
             {% else %}
                 <h3>Нет ответов</h3>
@@ -39,13 +39,14 @@
         <hr>
         <div class="comment-form">
             <h2>Добавить новый комментарий</h2>
-            <form method="post">
+            <form  method="post">
                 {% csrf_token %}
                 {% for field in form %}
                     <p><label for="{{ field.id_for_label }}">{{ field.label }}: </label>{{ field }}</p>
                     <div class="form-error">{{ field.errors }}</div>
                 {% endfor %}
-                <input type="submit" value="Отправить">
+                    <input type="hidden" name="response_id" value="{{ response.pk }}">
+                    <button type="submit">Отметить как прочитанное</button>
             </form>
         </div>
     </div>
