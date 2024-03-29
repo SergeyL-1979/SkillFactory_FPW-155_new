@@ -22,11 +22,11 @@ class Category(models.Model):
 
     def save(self, *args, **kwargs):
         """
-        Save the object, generating a slug for the name if it's not already set.
+        Сохраните объект, создав ярлык для имени, если оно еще не установлено.
 
-        Parameters:
-            *args: Variable length argument list.
-            **kwargs: Arbitrary keyword arguments.
+        Параметры:
+            *args: список аргументов переменной длины.
+            **kwargs: произвольные аргументы ключевых слов.
         """
         if not self.name:
             self.name = slugify(str(self.name))
@@ -41,12 +41,12 @@ class Category(models.Model):
 @receiver(post_migrate)
 def create_initial_categories(sender, **kwargs):
     """
-    Create initial categories after a migration is applied.
+    Создайте начальные категории после применения миграции.
 
-    This function is a signal receiver that is triggered after a migration is applied.
-    It checks if the sender's name is "fan_board" and if so, it creates initial categories
-    by iterating over a list of category names. For each category name, it calls the
-    `get_or_create` method of the `Category` model to create or retrieve the category.
+    Эта функция представляет собой приемник сигнала, который срабатывает после применения миграции.
+    Он проверяет, является ли имя отправителя «fan_board», и если да, то создает начальные категории.
+    путем перебора списка названий категорий. Для каждого имени категории он вызывает
+    Метод get_or_create модели Category для создания или получения категории.
 
     Parameters:
         sender (Any): The sender of the signal.
