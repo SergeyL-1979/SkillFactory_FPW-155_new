@@ -1,5 +1,5 @@
 from django.core.mail import send_mail
-from django.db.models.signals import m2m_changed
+from django.db.models.signals import m2m_changed, post_save
 from django.dispatch import receiver
 from django.template.loader import render_to_string
 from django.core.mail import EmailMultiAlternatives
@@ -10,27 +10,31 @@ from fan_board.models import Response, Advertisement
 from mmorpg_fansite import settings
 
 
-@receiver(m2m_changed, sender=Advertisement)
-def notify_new_response(sender, action, instance, **kwargs):
-    if action == "post_add":
-        for user in instance.accepted_answer.all():
-            msg = EmailMultiAlternatives(
-                subject=instance.headline,
-                body=instance.content,
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                to='mailto:{}'.format(user.email),
-            )
-            msg.attach_alternative(
-                render_to_string(
-                    'fan_board/email_template.html',
-                    {
-                        'ad': instance,
-                        'user': user
-                    }
-                ),
-                'text/html'
-            )
-            msg.send()
+@receiver(post_save, sender=Advertisement)
+def product_created(instance, **kwargs):
+    print('Объявление', instance)
+
+# @receiver(post_save, sender=Advertisement)
+# def notify_new_response(sender, created, instance, **kwargs):
+#     if created == "post_add":
+#         for user in instance.accepted_answer.all():
+#             msg = EmailMultiAlternatives(
+#                 subject=instance.headline,
+#                 body=instance.content,
+#                 from_email=settings.DEFAULT_FROM_EMAIL,
+#                 to='mailto:{}'.format(user.email),
+#             )
+#             msg.attach_alternative(
+#                 render_to_string(
+#                     'fan_board/email_template.html',
+#                     {
+#                         'ad': instance,
+#                         'user': user
+#                     }
+#                 ),
+#                 'text/html'
+#             )
+#             msg.send()
 
 
 

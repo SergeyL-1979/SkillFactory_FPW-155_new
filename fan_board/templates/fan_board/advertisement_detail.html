@@ -39,7 +39,7 @@
         <hr>
         <div class="comment-form">
             <h2>Добавить новый комментарий</h2>
-            <form action="{% url 'fan_board:accepted_answer' accepted_answer.pk %}" method="post">
+            <form action="." method="post">
                 {% csrf_token %}
                 {% for field in form %}
                     <p><label for="{{ field.id_for_label }}">{{ field.label }}: </label>{{ field }}</p>

@@ -69,7 +69,7 @@ class Advertisement(models.Model):
     ad_author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Автор')
     ad_category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='Категория')
     headline = models.CharField(max_length=100, verbose_name='Заголовок')
-    content = CKEditor5Field(blank=True, null=True, verbose_name='Полное описание')
+    content = CKEditor5Field(verbose_name='Полное описание', config_name='extends')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата публикации')
 
     class Meta:
