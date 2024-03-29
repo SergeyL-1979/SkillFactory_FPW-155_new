@@ -10,7 +10,7 @@ from django_ckeditor_5.fields import CKEditor5Field
 
 
 class Category(models.Model):
-    """ Модель Category """
+    """ Модель для категорий объявлений """
     name = models.CharField(max_length=100, unique=True, verbose_name='Имя категории')
 
     class Meta:
@@ -21,12 +21,19 @@ class Category(models.Model):
         return '{}'.format(self.name)
 
     def save(self, *args, **kwargs):
+        """
+        Save the object, generating a slug for the name if it's not already set.
+
+        Parameters:
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+        """
         if not self.name:
             self.name = slugify(str(self.name))
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        """Получить ссылку на объект"""
+        """ Получить ссылку на объект """
         return reverse('category', kwargs={'pk': self.pk})
 
 
@@ -58,6 +65,7 @@ def create_initial_categories(sender, **kwargs):
 
 
 class Advertisement(models.Model):
+    """ Модель для объявлений """
     ad_author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Автор')
     ad_category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='Категория')
     headline = models.CharField(max_length=100, verbose_name='Заголовок')
@@ -78,6 +86,7 @@ class Advertisement(models.Model):
 
 
 class Response(models.Model):
+    """ Модель для откликов """
     ad = models.ForeignKey(Advertisement, on_delete=models.CASCADE)
     text = models.TextField()
     user_answer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
