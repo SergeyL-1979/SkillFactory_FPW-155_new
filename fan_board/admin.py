@@ -6,6 +6,7 @@ from .models import Advertisement, Response, Category
 class AdvertisementAdmin(admin.ModelAdmin):
     list_display = ['ad_author', 'headline', 'ad_category']
     search_fields = ['headline', 'ad_category']
+    list_filter = ['headline', 'ad_category']
     # Add other configurations as needed
 
 

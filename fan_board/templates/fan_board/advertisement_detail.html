@@ -7,7 +7,7 @@
                 <h1 class="ad-detail">{{ ads_detail.headline }}</h1>
                 <div class="ads">
                     <p class="category"><strong>Категория: </strong>{{ ads_detail.ad_category }}</p>
-                    <p class="ad-text">Текст объявления: {{ ads_detail.content|safe }}</p>
+                    <p class="ad-text">{{ ads_detail.content|safe }}</p>
                     <p class="author">Автор: {{ ads_detail.ad_author.first_name }}</p>
                 </div>
             </div>

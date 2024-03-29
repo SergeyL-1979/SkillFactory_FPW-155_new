@@ -1,16 +1,12 @@
-from django.contrib.auth import get_user_model
 from django.db import models
-from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.dispatch import receiver
 from django.db.models.signals import post_migrate
 from django.urls import reverse
-from django.contrib.auth.models import User
+
 from django.conf import settings
 from django.utils.text import slugify
 
 from django_ckeditor_5.fields import CKEditor5Field
-
-from users.models import CustomUser
 
 
 class Category(models.Model):
@@ -65,7 +61,7 @@ class Advertisement(models.Model):
     ad_author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Автор')
     ad_category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='Категория')
     headline = models.CharField(max_length=100, verbose_name='Заголовок')
-    content = CKEditor5Field(blank=True, null=True, verbose_name='Описание')
+    content = CKEditor5Field(blank=True, null=True, verbose_name='Полное описание')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата публикации')
 
     class Meta:
@@ -86,11 +82,11 @@ class Response(models.Model):
     text = models.TextField()
     user_answer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                                     related_name='answer', verbose_name='Автор отклика')
-    accepted_answer = models.BooleanField(default=False, verbose_name='Принять отклик')
     notified = models.BooleanField(default=False, verbose_name='Уведомлен')
+    accepted_answer = models.BooleanField(default=False, verbose_name='Принять отклик')
     created_at = models.DateTimeField(auto_now_add=True)
-    # answer = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='answer',
-    # verbose_name='Опубликовать ответ')
+    # notified = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='answer',
+    #                                   verbose_name='Опубликовать ответ')
     # accepted_answer = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='accepted_answer',
     #                                          verbose_name='Принятый ответ')
 
@@ -100,17 +96,4 @@ class Response(models.Model):
     class Meta:
         verbose_name = 'Отклик'
         verbose_name_plural = 'Отклики'
-
-
-# class PrivatePage(models.Model):
-#     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Пользователь')
-#     response = models.ForeignKey(Response, models.CASCADE, verbose_name='Отклик')
-#
-#     # user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Пользователь')
-#     # user = models.OneToOneField(User, on_delete=models.CASCADE)
-#
-#     class Meta:
-#         verbose_name = 'Приват'
-#         verbose_name_plural = 'Приват'
-
 

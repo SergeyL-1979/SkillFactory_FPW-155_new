@@ -7,11 +7,16 @@ class AdvertisementForm(forms.ModelForm):
 
     class Meta:
         model = Advertisement
-        fields = ['headline', 'content', 'ad_category', ]
+        fields = ['ad_category', 'headline', 'content']
 
     def __init__(self, *args, **kwargs):
-        self.instance = kwargs.get('instance')
+        """ Обновление стилей формы под Bootstrap. """
         super().__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs.update({'class': 'form-control', 'autocomplete': 'off'})
+
+        self.fields['content'].widget.attrs.update({'class': 'form-control django_ckeditor_5'})
+        self.fields['content'].required = False
 
     def clean_headline(self):
         headline = self.cleaned_data['headline']
