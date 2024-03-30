@@ -14,5 +14,5 @@ urlpatterns = [
 
     path('category/<str:slug>/', views.CategoryAdsView.as_view(), name='category_ads'),
 
-    # path('handle_response/', views.handle_response, name='handle_response'),
+    path('private/', views.PrivatePageView.as_view(), name='private_page'),
 ]

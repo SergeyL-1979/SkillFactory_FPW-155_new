@@ -143,16 +143,34 @@ class AdDeleteView(LoginRequiredMixin, generic.DeleteView):
         return obj
 
 
-# @login_required
-# def handle_response(request):
-#     if request.method == 'POST':
-#         # comment = Response.objects.get(pk=request.POST.get('headline'))
-#         ad = request.POST.get('ad_id')
-#         headline = request.POST.get(id=ad)
-#         action = request.POST.get('action')
-#         print(action, ' ПРЕДСТАВЛЕНИЕ КОММЕНТАРИЯ ', headline)
-#     # comment.accepted_answer = True
-#     # comment.save()
-#     return redirect(request.META.get('HTTP_REFERER'))
+class PrivatePageView(LoginRequiredMixin, generic.TemplateView):
+    template_name = 'fan_board/private_page.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Фильтруем отклики по объявлению
+        context['responses'] = Response.objects.filter(ad__ad_author=self.request.user)
+        return context
+
+    def post(self, request, *args, **kwargs):
+        response_id = request.POST.get('response_id')
+        action = request.POST.get('action')
+
+        response = get_object_or_404(Response, id=response_id)
+
+        if action == 'delete':
+            if response.ad.ad_author == request.user:
+                response.delete()
+                messages.success(request, 'Отклик успешно удален.')
+            else:
+                messages.error(request, 'Вы не можете удалить этот отклик.')
+        elif action == 'accept':
+            if response.ad.ad_author == request.user:
+                response.accepted_answer = True
+                response.save()
+                messages.success(request, 'Отклик успешно принят.')
+            else:
+                messages.error(request, 'Вы не можете принять этот отклик.')
+
+        return redirect('fan_board:private_page')
 
