@@ -82,7 +82,7 @@ class Advertisement(models.Model):
 
     def get_absolute_url(self):
         """ Получить ссылку на объект """
-        return reverse('ad_detail', kwargs={'pk': self.pk})
+        return reverse('fan_board:ads_detail', kwargs={'headline': self.headline})
 
 
 class Response(models.Model):

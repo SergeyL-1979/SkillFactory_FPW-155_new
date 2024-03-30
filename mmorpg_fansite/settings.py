@@ -267,6 +267,7 @@ LOGIN_REDIRECT_URL = '/account/profile/'
 LOGOUT_REDIRECT_URL = '/mmorpg/'
 
 AUTH_USER_MODEL = 'users.CustomUser'
+DOMAIN_NAME = os.environ.get('DOMAIN_NAME')
 
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
