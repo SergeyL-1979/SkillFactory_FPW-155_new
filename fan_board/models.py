@@ -91,10 +91,8 @@ class Response(models.Model):
     text = models.TextField()
     user_answer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                                     related_name='answer', verbose_name='Автор отклика')
-
     accepted_answer = models.BooleanField(default=False, verbose_name='Принять отклик')
     created_at = models.DateTimeField(auto_now_add=True)
-
 
     def __str__(self):
         return f'{self.text}'
