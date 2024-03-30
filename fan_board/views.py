@@ -143,13 +143,16 @@ class AdDeleteView(LoginRequiredMixin, generic.DeleteView):
         return obj
 
 
-@login_required
-def user_response(request):
-    """ Отправка отклик по объявлению на пост """
-    response = get_object_or_404(Response, id=request.POST.get('response_id'))
-    response.accepted_answer.add(request.user)
-    messages.info(request, 'Отклик успешно отправлен!')
-    print(f'{request.user} отправил отклик на объявление "{response.ad.headline}"')
-    print()
-    return redirect('ads_detail', headline=response.ad.headline)
+# @login_required
+# def handle_response(request):
+#     if request.method == 'POST':
+#         # comment = Response.objects.get(pk=request.POST.get('headline'))
+#         ad = request.POST.get('ad_id')
+#         headline = request.POST.get(id=ad)
+#         action = request.POST.get('action')
+#         print(action, ' ПРЕДСТАВЛЕНИЕ КОММЕНТАРИЯ ', headline)
+#     # comment.accepted_answer = True
+#     # comment.save()
+#     return redirect(request.META.get('HTTP_REFERER'))
+
 
