@@ -59,3 +59,17 @@ class UserProfileEdit(LoginRequiredMixin, UpdateView):
         return reverse_lazy('users:profile')
 
 
+class ConfirmUser(UpdateView):
+    model = CustomUser
+    context_object_name = 'confirm_user'
+
+    def post(self, request, *args, **kwargs):
+        if 'activation_code' in request.POST:
+            user = CustomUser.objects.filter(activation_code=request.POST['activation_code'])
+            if user.exists():
+                user.update(is_active=True)
+                user.update(is_staff=True)
+                user.update(activation_code=None)
+            else:
+                return render(self.request, 'users/invalid_code.html')
+        return redirect('/account/login/')

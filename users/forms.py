@@ -1,3 +1,7 @@
+import logging
+import random
+import string
+
 from allauth.account.forms import LoginForm, SignupForm
 from django import forms
 from django.forms import (
@@ -5,6 +9,8 @@ from django.forms import (
 from django.core.exceptions import ValidationError
 
 from users.models import CustomUser
+
+logger = logging.getLogger(__name__)
 
 
 class UserForm(ModelForm):
@@ -88,22 +94,23 @@ class UserRegistrationForm(SignupForm):
     def save(self, request, commit=True):
         # Сначала вызываем метод save родительского класса
         user = super(UserRegistrationForm, self).save(request)
+        user.is_active = False
         # Затем сохраняем дополнительные данные
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
         user.username = self.cleaned_data['email'].split('@')[0]
+
+        # Генерация временного пароля и сохранение в поле activation_code
+        temp_password = ''.join(random.choices(string.ascii_letters + string.digits, k=12))
+        user.activation_code = temp_password
+        # Отправка временного пароля на почту пользователя
+        subject = 'Активация аккаунта'
+        message = f'Для активации вашего аккаунта используйте временный пароль: {temp_password}'
+        user.email_user(subject, message)
+
         if commit:
             user.save()
         return user
-
-    # TODO - реализовать активацию по коду при регистрации или в ТелеграмБот
-    # # Генерация временного пароля и сохранение в поле activation_code
-    # temp_password = ''.join(random.choices(string.ascii_letters + string.digits, k=12))
-    # user.activation_code = temp_password
-    # # Отправка временного пароля на почту пользователя
-    # subject = 'Активация аккаунта'
-    # message = f'Для активации вашего аккаунта используйте временный пароль: {temp_password}'
-    # user.email_user(subject, message)
 
     # def verify_code(self, request):
     #     if self.request.method == 'POST':

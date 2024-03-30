@@ -22,7 +22,7 @@ class CustomUser(AbstractUser):
     first_name = models.CharField(_("first name"), db_index=True, max_length=150, blank=True)
     last_name = models.CharField(_("last name"), db_index=True, max_length=150, blank=True)
     email = models.EmailField(_("email"), db_index=True, max_length=60, unique=True)
-    activation_code = models.CharField(max_length=30, blank=True, verbose_name=_("Код подтверждения"))
+    activation_code = models.CharField(max_length=30, null=True, blank=True, verbose_name=_("Код подтверждения"))
 
     objects = UserManager()
 

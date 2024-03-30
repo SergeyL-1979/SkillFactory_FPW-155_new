@@ -267,17 +267,15 @@ LOGIN_REDIRECT_URL = '/account/profile/'
 LOGOUT_REDIRECT_URL = '/mmorpg/'
 
 AUTH_USER_MODEL = 'users.CustomUser'
-# AUTH_USER_MODEL = 'users.User'
-# LOGIN_URL = '/user/login/'
 
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 # ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_VERIFICATION = True
+# ACCOUNT_EMAIL_VERIFICATION = True
 # ACCOUNT_EMAIL_VERIFICATION = 'optional'
-# ACCOUNT_EMAIL_VERIFICATION = 'mandatory'  # или 'optional' для необязательной верификации
+ACCOUNT_EMAIL_VERIFICATION = 'none'  # или 'mandatory' или 'optional' для необязательной верификации
 # ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3  # срок действия подтверждения адреса электронной почты
 # ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = '/'  # URL после успешной авторизации
 
