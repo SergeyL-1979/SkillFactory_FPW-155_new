@@ -154,13 +154,13 @@ class AdDeleteView(LoginRequiredMixin, generic.DeleteView):
         return obj
 
 
-@login_required(login_url='/account/login/')
-def user_response(request, pk):
-    """Отправка отклик по объявлению на пост"""
-    user_res = get_object_or_404(Response, id=request.POST.get('response_id'))
-    user_res.accepted_answer.add(request.user)
-    messages.info(request, 'Отклик успешно отправлен!')
-    print(f'{request.user} отправил отклик на объявление "{user_res.ad.headline}"')
-    print()
-    return redirect('post_detail', pk=pk)
+# @login_required(login_url='/account/login/')
+# def user_response(request, pk):
+#     """Отправка отклик по объявлению на пост"""
+#     user_res = get_object_or_404(Response, id=request.POST.get('response_id'))
+#     user_res.accepted_answer.add(request.user)
+#     messages.info(request, 'Отклик успешно отправлен!')
+#     print(f'{request.user} отправил отклик на объявление "{user_res.ad.headline}"')
+#     print()
+#     return redirect('post_detail', pk=pk)
 

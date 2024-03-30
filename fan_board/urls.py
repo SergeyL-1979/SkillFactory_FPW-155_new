@@ -16,5 +16,5 @@ urlpatterns = [
 
     # path('mark-notification-as-read/', views.mark_notification_as_read, name='mark_notification_as_read'),
 
-    path('response/<int:pk>/', views.user_response, name='accepted_answer'),
+    # path('response/<int:pk>/', views.user_response, name='accepted_answer'),
 ]
