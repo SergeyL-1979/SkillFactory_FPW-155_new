@@ -49,16 +49,6 @@ class AdListView(generic.ListView):
         return context
 
 
-# class AdDetailView(generic.DetailView):
-#     model = Advertisement
-#     context_object_name = 'ads_detail'
-#     slug_field = 'headline'
-#     slug_url_kwarg = 'headline'
-#
-#     def get_context_data(self, **kwargs):
-#         context = super(AdDetailView, self).get_context_data(**kwargs)
-#         context['ads_list'] = Advertisement.objects.all()
-#         return context
 class AdDetailView(generic.DetailView):
     """ View for displaying a single advertisement. """
     model = Advertisement
