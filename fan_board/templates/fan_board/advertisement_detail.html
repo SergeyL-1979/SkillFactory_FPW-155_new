@@ -39,13 +39,13 @@
         <hr>
         <div class="comment-form">
             <h2>Добавить новый комментарий</h2>
-            <form action="." method="post">
+            <form action="{% url 'fan_board:accepted_answer' %}" method="post">
                 {% csrf_token %}
                 {% for field in form %}
                     <p><label for="{{ field.id_for_label }}">{{ field.label }}: </label>{{ field }}</p>
                     <div class="form-error">{{ field.errors }}</div>
                 {% endfor %}
-                    <input type="hidden" name="response_id" value="{{ response.pk }}">
+                    <input type="hidden" name="pk" value="{{ response.pk }}">
                     <button type="submit">Отметить как прочитанное</button>
             </form>
         </div>

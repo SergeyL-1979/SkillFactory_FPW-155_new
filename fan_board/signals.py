@@ -12,7 +12,7 @@ from mmorpg_fansite import settings
 
 @receiver(post_save, sender=Advertisement)
 def product_created(instance, **kwargs):
-    print('Объявление', instance)
+    print('Объявление', instance.headline, 'создано')
 
 # @receiver(post_save, sender=Advertisement)
 # def notify_new_response(sender, created, instance, **kwargs):
