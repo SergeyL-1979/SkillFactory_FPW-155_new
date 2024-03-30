@@ -12,7 +12,7 @@ class AdvertisementAdmin(admin.ModelAdmin):
 
 @admin.register(Response)
 class ResponseAdmin(admin.ModelAdmin):
-    list_display = ['ad', 'user_answer', 'accepted_answer', 'notified']
+    list_display = ['ad', 'user_answer', 'accepted_answer', ]
     list_filter = ['accepted_answer', ]
     search_fields = ['text', ]
     # Add other configurations as needed

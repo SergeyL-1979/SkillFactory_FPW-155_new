@@ -13,6 +13,7 @@ from django.views.generic import FormView
 
 from fan_board.models import Advertisement, Response, Category
 from fan_board.forms import AdvertisementForm, ResponseForm, AdvertisementUpdateForm
+from mmorpg_fansite import settings
 
 logger = logging.getLogger(__name__)
 
@@ -142,13 +143,16 @@ class AdDeleteView(LoginRequiredMixin, generic.DeleteView):
         return obj
 
 
-# @login_required(login_url='/account/login/')
-# def user_response(request, pk):
-#     """Отправка отклик по объявлению на пост"""
-#     user_res = get_object_or_404(Response, id=request.POST.get('response_id'))
-#     user_res.accepted_answer.add(request.user)
-#     messages.info(request, 'Отклик успешно отправлен!')
-#     print(f'{request.user} отправил отклик на объявление "{user_res.ad.headline}"')
-#     print()
-#     return redirect('post_detail', pk=pk)
+# @login_required
+# def handle_response(request):
+#     if request.method == 'POST':
+#         # comment = Response.objects.get(pk=request.POST.get('headline'))
+#         ad = request.POST.get('ad_id')
+#         headline = request.POST.get(id=ad)
+#         action = request.POST.get('action')
+#         print(action, ' ПРЕДСТАВЛЕНИЕ КОММЕНТАРИЯ ', headline)
+#     # comment.accepted_answer = True
+#     # comment.save()
+#     return redirect(request.META.get('HTTP_REFERER'))
+
 
