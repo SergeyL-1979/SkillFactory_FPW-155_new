@@ -12,8 +12,7 @@ from django.core.mail import send_mail
 from django.views.generic import FormView
 
 from fan_board.models import Advertisement, Response, Category
-from fan_board.forms import AdvertisementForm, ResponseForm
-
+from fan_board.forms import AdvertisementForm, ResponseForm, AdvertisementUpdateForm
 
 logger = logging.getLogger(__name__)
 
@@ -120,9 +119,8 @@ class AdCreateView(LoginRequiredMixin, generic.CreateView):
 
 class AdUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Advertisement
-    form_class = AdvertisementForm
-
-    # success_url = '/mmorpg/'
+    form_class = AdvertisementUpdateForm
+    template_name = 'fan_board/advertisement_update_form.html'
 
     def form_valid(self, form):
         form.instance.ad_author = self.request.user

@@ -35,6 +35,19 @@ class AdvertisementForm(forms.ModelForm):
         # return headline
 
 
+class AdvertisementUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Advertisement
+        fields = AdvertisementForm.Meta.fields
+
+    def __init__(self, *args, **kwargs):
+        """ Обновление стилей формы под Bootstrap. """
+        super().__init__(*args, **kwargs)
+
+        self.fields['content'].widget.attrs.update({'class': 'form-control django_ckeditor_5'})
+        self.fields['content'].required = False
+
+
 class ResponseForm(forms.ModelForm):
 
     class Meta:
