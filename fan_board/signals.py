@@ -50,7 +50,7 @@ def send_notification_email(sender, instance, created, **kwargs):
         subject = 'Отклик принят'
         message = f'Ваш отклик на объявление "{instance.ad.headline}" был принят.'
         from_email = settings.DEFAULT_FROM_EMAIL  # Замените на свой email
-        to_email = instance.ad.ad_author.email
+        to_email = instance.user_answer.email
         send_mail(subject, message, from_email, [to_email])
 # ================================================================================
 # # Отправляем уведомление на почту
