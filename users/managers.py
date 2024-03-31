@@ -38,12 +38,3 @@ class UserManager(BaseUserManager):
         user.set_password(password)
         user.save(using=self._db)
         return user
-
-    def activate_user(self, activation_code):
-        try:
-            user = self.get(activation_code=activation_code)
-            user.is_active = True
-            user.save()
-            return user
-        except self.model.DoesNotExist:
-            return None
