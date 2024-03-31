@@ -8,7 +8,17 @@ from mmorpg_fansite import settings
 
 @receiver(post_save, sender=Response)
 def response_created(sender, created, instance, **kwargs):
+    """
+    Функция приемника сигнала для обработки создания объекта ответа.
+    Параметры:
+    - sender: The model class that sent the signal
+    - created: A boolean indicating if the instance was created
+    - instance: The instance of the response object that was created
+    - **kwargs: Additional keyword arguments
 
+    Returns:
+    None
+    """
     if created:
         print('Объявление', instance.ad.headline, 'создано')
         domain = settings.DOMAIN_NAME
@@ -25,6 +35,16 @@ def response_created(sender, created, instance, **kwargs):
 
 @receiver(post_save, sender=Response)
 def send_notification_email(sender, instance, created, **kwargs):
+    """
+    Функция, активируемая после сохранения ответа для отправки уведомления по электронной почте автору объявления.
+    Параметры:
+    - sender: The sender of the signal
+    - instance: The instance of the Response model that was saved
+    - created: A boolean indicating if the instance was created or updated
+
+    Returns:
+    None
+    """
     if instance.accepted_answer:
         print('Отклик принят')
         subject = 'Отклик принят'
