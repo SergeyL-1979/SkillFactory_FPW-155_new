@@ -21,32 +21,21 @@
       </li>
     {% endfor %}
   </ul>
+    <div>
+        {% if messages %}
+        <ul id="messages" class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        <script>
+        setTimeout(function() {
+            var messages = document.getElementById('messages');
+            if (messages) {
+                messages.style.display = 'none';
+            }
+        }, 1000); // 1 секунд
+        </script>
+        {% endif %}
+    </div>
 {% endblock content %}
-{#{% block content %}#}
-{#  <h2>Приватная страница пользователя</h2>#}
-{#  <ul>#}
-{#    {% for response in responses %}#}
-{#      <li>#}
-{#        {{ response.text }}#}
-{#        {% if response.accepted_answer %}#}
-{#          (Принят)#}
-{#        {% endif %}#}
-{#        <form method="post" action="{% url 'fan_board:private_page' %}">#}
-{#          {% csrf_token %}#}
-{#          <input type="hidden" name="response_id" value="{{ response.id }}">#}
-{#          <button type="submit" name="action" value="delete">Удалить</button>#}
-{#          {% if not response.accepted_answer and response.ad.ad_author == request.user %}#}
-{#            {% if response.ad.ad_author == request.user %}#}
-{#                <form method="post" action="{% url 'fan_board:private_page' %}">#}
-{#                    {% csrf_token %}#}
-{#                    <input type="hidden" name="response_id" value="{{ response.id }}">#}
-{#                    <button type="submit" name="action" value="accept">Принять отклик</button>#}
-{#                </form>#}
-{#            {% endif %}#}
-{#          {% endif %}#}
-{#        </form>#}
-{#      </li>#}
-{#    {% endfor %}#}
-{#  </ul>#}
-{#{% endblock content %}#}
-
