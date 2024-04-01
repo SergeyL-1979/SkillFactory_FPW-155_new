@@ -13,6 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 class CategoryAdsView(generic.ListView):
+    """ Просмотр показа рекламы по категориям. """
     model = Advertisement
     template_name = 'fan_board/category_ads.html'
     context_object_name = 'cat_list'
@@ -20,8 +21,12 @@ class CategoryAdsView(generic.ListView):
     slug_url_kwarg = 'slug'
 
     def get_queryset(self):
-        # category = get_object_or_404(Category, name=self.kwargs['slug'])
-        # return Advertisement.objects.filter(ad_category=category)
+        """
+        Получите набор запросов объектов Advertisement, отфильтрованных по
+        название категории объявлений, указанное в параметре URL-slug.
+
+        :return: Queryset of Advertisement objects
+        """
         return Advertisement.objects.filter(ad_category__name=self.kwargs['slug'])
 
     def get_context_data(self, **kwargs):
