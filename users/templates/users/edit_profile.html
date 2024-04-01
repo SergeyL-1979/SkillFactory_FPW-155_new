@@ -21,12 +21,48 @@
 {% block content %}
 
     <div style="text-align:left" class="col-md-5">
-        <h2>Редактировать профиль</h2><br>
-        <form method="POST" enctype="multipart/form-data">
+        <form method="POST" enctype="multipart/form-data" class="custom-form">
             {% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" class="btn btn-primary btn-block" value="Сохранить">
+            <div class="form-group">
+                <label for="id_field1">Редактор профиля</label>
+                {{ form.as_p }}
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Сохранить</button>
         </form>
     </div>
-
+    <style>
+        .custom-form {
+            max-width: 400px; /* Максимальная ширина формы */
+            margin: 0 auto; /* Центрирование формы */
+            padding: 20px; /* Внутренний отступ формы */
+            border: 1px solid #ccc; /* Граница формы */
+            border-radius: 5px; /* Скругление углов формы */
+            background-color: #f9f9f9; /* Цвет фона формы */
+        }
+        
+        .form-group {
+            margin-bottom: 20px; /* Отступ между группами полей */
+        }
+        
+        label {
+            font-weight: bold; /* Жирный текст для меток полей */
+        }
+        
+        .btn {
+            padding: 10px 20px; /* Отступы кнопки */
+            border-radius: 5px; /* Скругление углов кнопки */
+            cursor: pointer; /* Изменение курсора при наведении */
+        }
+        
+        .btn-primary {
+            background-color: #007bff; /* Цвет фона кнопки */
+            border-color: #007bff; /* Цвет границы кнопки */
+            color: #fff; /* Цвет текста кнопки */
+        }
+        
+        .btn-primary:hover {
+            background-color: #0056b3; /* Цвет фона кнопки при наведении */
+            border-color: #0056b3; /* Цвет границы кнопки при наведении */
+        }
+    </style>
 {% endblock content %}
