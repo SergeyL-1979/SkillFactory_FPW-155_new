@@ -87,7 +87,7 @@ class Advertisement(models.Model):
 
 class Response(models.Model):
     """ Модель для откликов """
-    ad = models.ForeignKey(Advertisement, on_delete=models.CASCADE)
+    ad = models.ForeignKey(Advertisement, related_name='responses', on_delete=models.CASCADE)
     text = models.TextField()
     user_answer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                                     related_name='answer', verbose_name='Автор отклика')
