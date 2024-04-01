@@ -12,6 +12,19 @@
         border: 2px solid grey;
         text-align: center;
     }
+    
+    .btn-custom {
+        background-color: #28a745; /* Зеленый цвет */
+        color: #fff; /* Белый цвет текста */
+        border: none; /* Убираем границу кнопки */
+        padding: 10px 20px; /* Подбираем отступы */
+        border-radius: 5px; /* Скругляем углы кнопки */
+        cursor: pointer; /* Делаем курсор указателем при наведении на кнопку */
+    }
+    
+    .btn-custom:hover {
+        background-color: #218838; /* Зеленый цвет при наведении */
+    }
     </style>
 <div>
     <h2 style="text-align: center;">Кабинет пользователя</h2>
@@ -40,10 +53,9 @@
             </tr>
         </table>
         <br>
-        <a class="btn btn-success" href="{% url 'users:edit_profile' user.pk  %}">Редактировать профиль</a>
-
+{#        <a class="btn btn-success" href="{% url 'users:edit_profile' user.pk  %}">Редактировать профиль</a>#}
+        <button class="btn btn-custom" onclick="window.location.href='{% url 'users:edit_profile' user.pk  %}'">Редактировать профиль</button>
         <hr>
-        <a href="{% url 'fan_board:private_page' %}">Перейти к приватной странице</a>
     </div>
 </div>
 
