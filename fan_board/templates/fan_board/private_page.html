@@ -2,40 +2,87 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h2>Приватная страница пользователя</h2>
-  <ul>
-    {% for response in responses %}
-      <li>
-        {{ response.text }}
-        {% if response.accepted_answer %}
-          (Принят)
-        {% endif %}
-        <form method="post" action="{% url 'fan_board:private_page' %}">
-          {% csrf_token %}
-          <input type="hidden" name="response_id" value="{{ response.id }}">
-          <button type="submit" name="action" value="delete">Удалить</button>
-          {% if not response.accepted_answer and response.ad.ad_author == request.user %}
-            <button type="submit" name="action" value="accept">Принять отклик</button>
-          {% endif %}
-        </form>
-      </li>
-    {% endfor %}
-  </ul>
+    <h2>Приватная страница пользователя</h2>
+    {% if responses %}
+        {% regroup responses by ad.headline as response_list %}
+        {% for response_group in response_list %}
+            <h2>{{ response_group.grouper }}</h2>
+            <ul>
+                {% for response in response_group.list %}
+                    <li>
+                        <div class="author">{{ response.user_answer.get_full_name }}</div>
+                        <div class="text">{{ response.text }}</div>
+                        {% if response.accepted_answer %}
+                            <span class="accepted">(Принят)</span>
+                        {% endif %}
+                        <form method="post" action="{% url 'fan_board:private_page' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="response_id" value="{{ response.id }}">
+                            <button type="submit" name="action" value="delete">Удалить</button>
+                            {% if not response.accepted_answer and response.ad.ad_author == request.user %}
+                                <button type="submit" name="action" value="accept">Принять отклик</button>
+                            {% endif %}
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endfor %}
+    {% else %}
+        <p>Нет откликов</p>
+    {% endif %}
     <div>
         {% if messages %}
-        <ul id="messages" class="messages">
-            {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
-        <script>
-        setTimeout(function() {
-            var messages = document.getElementById('messages');
-            if (messages) {
-                messages.style.display = 'none';
-            }
-        }, 1000); // 1 секунд
-        </script>
+            <ul id="messages" class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            <script>
+                setTimeout(function () {
+                    var messages = document.getElementById('messages');
+                    if (messages) {
+                        messages.style.display = 'none';
+                    }
+                }, 1000); // 1 секунд
+            </script>
         {% endif %}
     </div>
+<style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    .headline {
+      font-weight: bold;
+      font-size: 18px;
+      margin-bottom: 5px;
+    }
+    .accepted {
+      color: green;
+      font-weight: bold;
+    }
+    form {
+      display: inline;
+    }
+    button {
+      cursor: pointer;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 3px;
+      background-color: #007bff;
+      color: #fff;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+</style>
 {% endblock content %}

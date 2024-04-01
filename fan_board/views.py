@@ -1,19 +1,13 @@
 import logging
 
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Count
-from django.http import Http404, JsonResponse
 from django.urls import reverse
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.views import generic
-from django.core.mail import send_mail
-from django.views.generic import FormView
 
 from fan_board.models import Advertisement, Response, Category
 from fan_board.forms import AdvertisementForm, ResponseForm, AdvertisementUpdateForm
-from mmorpg_fansite import settings
 
 logger = logging.getLogger(__name__)
 
