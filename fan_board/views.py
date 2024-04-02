@@ -79,6 +79,8 @@ class AdDetailView(generic.DetailView):
 
     def post(self, request, *args, **kwargs):
         """ Handle POST requests. """
+        if not request.user.is_authenticated:
+            return redirect('users:login')
         form = self.form_class(request.POST)
         if form.is_valid():
             # Сохраняем отклик в базу данных

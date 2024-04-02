@@ -8,7 +8,7 @@
                 <div class="ads">
                     <p class="category"><strong>Категория: </strong>{{ ads_detail.ad_category }}</p>
                     <p class="ad-text">{{ ads_detail.content|safe }}</p>
-                    <p class="author">Автор: {{ ads_detail.ad_author.first_name }}</p>
+                    <p class="author">Автор: {{ ads_detail.ad_author.get_full_name }}</p>
                 </div>
             </div>
             <div class="ad-actions">
@@ -37,6 +37,8 @@
             {% endif %}
         </div>
         <hr>
+    {% if request.user.is_authenticated %}
+        {% if not ads_detail.ad_author == request.user %}
         <div class="comment-form">
             <h2>Добавить новый комментарий</h2>
             <form method="post">
@@ -49,5 +51,7 @@
                 <button type="submit">Отправить отклик</button>
             </form>
         </div>
+        {% endif %}
+    {% endif %}
     </div>
 {% endblock %}
