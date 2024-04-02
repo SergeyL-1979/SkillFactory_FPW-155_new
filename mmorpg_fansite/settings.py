@@ -404,54 +404,43 @@ ACCOUNT_SIGNUP_TEMPLATE = 'allauth/account/signup.html'
 #     }
 # }
 # =================================================================================================
+
 # LOGGING = {
 #     'version': 1,
 #     'disable_existing_loggers': False,
-#     'formatters': {
-#         'console': {
-#             'format': '%(name)-12s %(levelname)-8s %(message)s'
-#         },
-#         'file': {
-#             'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
-#         }
-#     },
 #     'handlers': {
-#         'console': {
-#             'class': 'logging.StreamHandler',
-#             'formatter': 'console',
-#         },
-#         'file': {
+#         'file_debug': {
 #             'level': 'DEBUG',
 #             'class': 'logging.FileHandler',
-#             'filename': 'log/logs.log'
+#             'filename': os.path.join(BASE_DIR, 'log', 'debug.log'),
 #         },
-#         'mail_admins': {
+#         'file_error': {
 #             'level': 'ERROR',
-#             'class': 'django.utils.log.AdminEmailHandler',
-#             'include_html': True
-#         }
+#             'class': 'logging.FileHandler',
+#             'filename': os.path.join(BASE_DIR, 'log', 'error.log'),
+#         },
+#         'file_category': {
+#             'level': 'DEBUG',
+#             'class': 'logging.FileHandler',
+#             'filename': os.path.join(BASE_DIR, 'log', 'category.log'),
+#         },
+#         'console': {
+#             'level': 'DEBUG',
+#             'class': 'logging.StreamHandler',
+#             # 'formatter': 'debug_format',
+#             # 'filters': ['require_debug_true'],
+#         },
 #     },
 #     'loggers': {
-#         '': {
-#             'level': 'INFO',
-#             'handlers': ['console', 'file']
+#         'django': {
+#             'handlers': ['file_debug', 'file_error',],
+#             'level': 'DEBUG',
+#             'propagate': True,
 #         },
-#         'mail_admins': {
-#             'level': 'ERROR',
-#             'handlers': ['console', 'mail_admins']
+#         __name__: {
+#             'handlers': ['file_category', 'console',],
+#             'level': 'DEBUG',
+#             'propagate': True,
 #         },
-#         # 'django.db.backends': {
-#         #     'handlers': ['console', 'file'],
-#         #     'level': 'DEBUG'
-#         # },
-#         # 'django': {
-#         #     'handlers': ['console', 'file'],
-#         #     'level': 'DEBUG',
-#         #     'propagate': True,
-#         # }
-#     },
-#     'root': {
-#         'handlers': ['console'],
-#         'level': 'INFO',
 #     },
 # }

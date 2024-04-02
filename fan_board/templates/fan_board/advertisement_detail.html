@@ -11,18 +11,18 @@
                     <p class="author">Автор: {{ ads_detail.ad_author.get_full_name }}</p>
                 </div>
             </div>
-            <div class="ad-actions">
-                {% if request.user.is_authenticated %}
-                    {% if ads_detail.ad_author == request.user %}
-                        <button onclick="window.location.href='{% url 'fan_board:ads_update' ads_detail.headline %}'">Редактировать</button>
-                        <form method="post" action="{% url 'fan_board:ads_delete' ads_detail.headline %}" style="display:inline;">
-                            {% csrf_token %}
-                            <button type="submit">Удалить</button>
-                        </form>
+                <div class="ad-actions">
+                    {% if request.user.is_authenticated %}
+                        {% if ads_detail.ad_author == request.user %}
+                            <button onclick="window.location.href='{% url 'fan_board:ads_update' ads_detail.headline %}'">Редактировать</button>
+                            <form method="post" action="{% url 'fan_board:ads_delete' ads_detail.headline %}" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit">Удалить</button>
+                            </form>
+                        {% endif %}
                     {% endif %}
-                {% endif %}
-                <button onclick="window.location.href='{% url 'fan_board:ads_list' %}'">Назад</button>
-            </div>
+                    <button onclick="window.location.href='{% url 'fan_board:ads_list' %}'">Назад</button>
+                </div>
         </div>
         <hr>
         <div class="response">
@@ -37,21 +37,97 @@
             {% endif %}
         </div>
         <hr>
-    {% if request.user.is_authenticated %}
-        {% if not ads_detail.ad_author == request.user %}
-        <div class="comment-form">
-            <h2>Добавить новый комментарий</h2>
-            <form method="post">
-                {% csrf_token %}
-                {% for field in form %}
-                    <p><label for="{{ field.id_for_label }}">{{ field.label }}: </label>{{ field }}</p>
-                    <div class="form-error">{{ field.errors }}</div>
-                {% endfor %}
-                <input type="hidden" name="headline" value="{{ ad.headline }}">
-                <button type="submit">Отправить отклик</button>
-            </form>
-        </div>
+        {% if request.user.is_authenticated %}
+            {% if not ads_detail.ad_author == request.user %}
+            <div class="comment-form">
+                <h2 style="text-align: center;">Добавить отклик</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <p><label for="{{ field.id_for_label }}">{{ field.label }}: </label>{{ field }}</p>
+                        <div class="form-error">{{ field.errors }}</div>
+                    {% endfor %}
+                    <button type="submit">Отправить отклик</button>
+                </form>
+            </div>
+            {% endif %}
         {% endif %}
-    {% endif %}
     </div>
+    
+    <style>
+        .ad-actions {
+            text-align: center;
+            margin-top: 20px;
+        }
+    
+        .ad-actions button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition-duration: 0.4s;
+        }
+    
+        .ad-actions button:hover {
+            background-color: #45a049;
+        }
+
+        .comment-form {
+            background-color: #f2f2f2;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+    
+        .comment-form h2 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+    
+        .comment-form form {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+    
+        .comment-form label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+    
+        .comment-form input[type="text"],
+        .comment-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    
+        .comment-form .form-error {
+            color: red;
+            margin-bottom: 10px;
+        }
+    
+        .comment-form button[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+    
+        .comment-form button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
 {% endblock %}

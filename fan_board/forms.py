@@ -64,5 +64,5 @@ class ResponseForm(forms.ModelForm):
             ),
         }
         labels = {
-            'text': 'Отклик',
+            'text': ' ',
         }
