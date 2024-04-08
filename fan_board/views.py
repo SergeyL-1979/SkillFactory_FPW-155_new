@@ -2,6 +2,8 @@ import logging
 
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseForbidden
+from django.shortcuts import render
 from django.urls import reverse
 from django.shortcuts import get_object_or_404, redirect
 from django.views import generic
@@ -113,6 +115,17 @@ class AdUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Advertisement
     form_class = AdvertisementUpdateForm
     template_name = 'fan_board/advertisement_update_form.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        # Получаем объект объявления
+        obj = self.get_object()
+
+        # Проверяем, является ли текущий пользователь автором объявления
+        if request.user != obj.ad_author:
+            # Если нет, отображаем страницу с сообщением об ошибке
+            return HttpResponseForbidden(render(request, 'fan_board/error_page.html'))
+
+        return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         form.instance.ad_author = self.request.user
