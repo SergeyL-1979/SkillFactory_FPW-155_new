@@ -70,7 +70,7 @@ class Advertisement(models.Model):
     ad_category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='Категория')
     headline = models.CharField(max_length=100, verbose_name='Заголовок')
     content = CKEditor5Field(verbose_name='Полное описание', config_name='extends')
-    image = models.ImageField(upload_to='media/', null=True, blank=True, verbose_name='Изображение')
+    image = models.ImageField(upload_to='img/', null=True, blank=True, verbose_name='Изображение')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата публикации')
 
     class Meta:
