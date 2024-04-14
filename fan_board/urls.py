@@ -15,4 +15,6 @@ urlpatterns = [
     path('category/<str:slug>/', views.CategoryAdsView.as_view(), name='category_ads'),
 
     path('private/', views.PrivatePageView.as_view(), name='private_page'),
+
+    path('search/', views.SearchAdsView.as_view(), name='search_results'),
 ]

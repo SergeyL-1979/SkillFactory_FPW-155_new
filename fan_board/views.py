@@ -3,12 +3,14 @@ import logging
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
+from django.db.models import Q
 from django.http import HttpResponseForbidden
 from django.shortcuts import render
 from django.urls import reverse
 from django.shortcuts import get_object_or_404, redirect
 from django.views import generic
 
+from fan_board.filters import AdvertisementFilter
 from fan_board.models import Advertisement, Response, Category
 from fan_board.forms import AdvertisementForm, ResponseForm, AdvertisementUpdateForm
 
@@ -204,4 +206,51 @@ class PrivatePageView(LoginRequiredMixin, generic.TemplateView):
         return redirect('fan_board:private_page')
 
 
+class SearchAdsView(generic.ListView):
+    model = Advertisement
+    template_name = 'fan_board/search_results.html'
+    filterset_class = AdvertisementFilter
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        query = self.request.GET.get('q')
+
+        if query:
+            queryset = queryset.filter(
+                Q(ad_author__first_name__icontains=query) |
+                Q(ad_author__last_name__icontains=query) |
+                Q(ad_author__username__icontains=query) |
+                Q(ad_category__name__icontains=query) |
+                Q(headline__icontains=query)
+            )
+        else:
+            queryset = Advertisement.objects.none()  # Пустой QuerySet, чтобы не выводить ничего
+
+        return queryset
+
+    def get(self, request, *args, **kwargs):
+        if 'q' in self.request.GET:
+            # Если есть параметр 'q' в запросе, значит, это запрос поиска
+            # Отображаем шаблон для результатов поиска
+            return render(request, 'fan_board/search_results.html', {'object_list': self.get_queryset()})
+        else:
+            # В противном случае отображаем только форму поиска
+            return render(request, 'fan_board/search_form.html')
+
+# class SearchAdsView(generic.ListView):
+#     model = Advertisement
+#     template_name = 'fan_board/search_results.html'
+#     filterset_class = AdvertisementFilter
+#
+#     def get_queryset(self):
+#         queryset = super().get_queryset()
+#         query = self.request.GET.get('q')
+#
+#         if query:
+#             queryset = queryset.filter(
+#                 Q(ad_author__first_name__icontains=query) |
+#                 Q(ad_category__name__icontains=query) |
+#                 Q(headline__icontains=query)
+#             )
+#
+#         return queryset

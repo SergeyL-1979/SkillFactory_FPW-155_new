@@ -258,7 +258,7 @@ EMAIL_USE_TLS = True  # Здесь должно быть True, Иначе отп
 EMAIL_HOST_USER = os.environ.get('HOST_USER_YA')  # ваш QQ Номер счета и код авторизации
 EMAIL_HOST_PASSWORD = os.environ.get('YANDEX_ID')
 SERVER_EMAIL = EMAIL_HOST_USER
-DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_EMAIL')
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 # =====================================================
 
 # =========== Основные настройки allauth =================

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+        <div class="search-box">
+            <form method="get" action="{% url 'fan_board:search_results' %}">
+                <input type="text" name="q" placeholder="Поиск по заголовку, автору или категории">
+                <button type="submit">Поиск</button>
+            </form>
+        </div>
+    </div>
+
+    <style>
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            {#height: 50vh;#}
+        }
+        
+        .search-box {
+            text-align: center;
+        }
+        
+        .search-box input[type="text"] {
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            width: 300px;
+            margin-right: 10px;
+        }
+        
+        .search-box button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .search-box button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+{% endblock content %}
