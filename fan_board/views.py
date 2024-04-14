@@ -2,6 +2,7 @@ import logging
 
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.paginator import Paginator
 from django.http import HttpResponseForbidden
 from django.shortcuts import render
 from django.urls import reverse
@@ -21,6 +22,7 @@ class CategoryAdsView(generic.ListView):
     context_object_name = 'cat_list'
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
+    paginate_by = 5
 
     def get_queryset(self):
         """
@@ -34,12 +36,18 @@ class CategoryAdsView(generic.ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['category_name'] = get_object_or_404(Category, name=self.kwargs['slug'])
+
+        paginator = Paginator(context['cat_list'], self.paginate_by)
+        page_number = self.request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        context['cat_list'] = page_obj
         return context
 
 
 class AdListView(generic.ListView):
     model = Advertisement
     context_object_name = 'ads_list'
+    paginate_by = 3
 
     def get_category_display(self):
         return self.request.GET.get('category_display')
@@ -62,9 +70,16 @@ class AdDetailView(generic.DetailView):
         """ Retrieve and return the object the view is displaying. """
         if queryset is None:
             queryset = self.get_queryset()
+        pk = self.kwargs.get('pk')
+        headline = self.kwargs.get('headline')
+        # Пытаемся получить объект по первичному ключу (pk)
+        if pk:
+            queryset = queryset.filter(pk=pk)
+        elif headline:
+            queryset = queryset.filter(headline=headline)
 
         # Получаем значение из URL и используем его для фильтрации объявлений
-        headline = self.kwargs.get('headline')
+        # headline = self.kwargs.get('headline')
         return get_object_or_404(queryset, headline=headline)
 
     def get_context_data(self, **kwargs):
@@ -187,4 +202,6 @@ class PrivatePageView(LoginRequiredMixin, generic.TemplateView):
                 messages.error(request, 'Вы не можете принять этот отклик.')
 
         return redirect('fan_board:private_page')
+
+
 

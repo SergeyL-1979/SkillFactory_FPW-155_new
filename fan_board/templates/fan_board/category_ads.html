@@ -3,29 +3,94 @@
 {% block content %}
 
 <div class="content">
-    <div class="col-md-6">
-        <h1 class="fw-bolder mb-1">{{ category_name }}</h1>
+    <div class="row">
+        <div class="col-md-6">
+            <h1 class="fw-bolder mb-1">{{ category_name }}</h1>
+        </div>
     </div>
 
-    <div class="col-sm-6">
-        {% if cat_list %}
-            <ul class="text content">
-                {% for ad in cat_list %}
-                    <li class="list-group-item">
-                        <h2><a href="{% url 'fan_board:ads_detail' ad.headline %}">{{ ad.headline }}</a></h2>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>В данной категории нет объявлений.</p>
-        {% endif %}
+    <div class="row">
+        <div class="col-md-12">
+            {% if cat_list %}
+                <ul class="list-group">
+                    {% for ad in cat_list %}
+                        <li class="list-group-item">
+                            <h2><a href="{% url 'fan_board:ads_detail' ad.headline %}">{{ ad.headline }}</a></h2>
+                        </li>
+                    {% endfor %}
+                </ul>
+                {% if is_paginated %}
+                <div class="pagination">
+                    <span class="step-links">
+                        {% if page_obj.has_previous %}
+                            <a href="?page=1">&laquo; Первая</a>
+                            <a href="?page={{ page_obj.previous_page_number }}">Предыдущая</a>
+                        {% endif %}
+                        <span class="current">
+                            Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+                        </span>
+                        {% if page_obj.has_next %}
+                            <a href="?page={{ page_obj.next_page_number }}">Следующая</a>
+                            <a href="?page={{ page_obj.paginator.num_pages }}">Последняя &raquo;</a>
+                        {% endif %}
+                    </span>
+                </div>
+                {% endif %}
+            {% else %}
+                <p>В данной категории нет объявлений.</p>
+            {% endif %}
+        </div>
     </div>
-    <div>
-        <button onclick="history.back()">Назад</button>
+
+    <div class="row">
+        <div class="col-md-6 text-end">
+            <button class="btn btn-colorful" onclick="history.back()">Назад</button>
+        </div>
     </div>
 </div>
 
+<style>
+    .btn-colorful {
+        background-color: #4CAF50; /* Зеленый цвет фона */
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 12px; /* Закругление углов */
+    }
+    .btn-colorful:hover {
+        background-color: #45a049; /* Цвет фона при наведении */
+    }
 
+    /* Добавленные стили для пагинации */
+    .pagination {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+    }
 
+    .pagination a {
+        padding: 6px 12px;
+        margin: 0 3px;
+        border: 1px solid #ddd;
+        background-color: #f9f9f9;
+        color: #428bca;
+        text-decoration: none;
+    }
 
+    .pagination a:hover {
+        background-color: #ddd;
+    }
+
+    .pagination .current {
+        border-color: #428bca;
+        background-color: #428bca;
+        color: #fff;
+    }
+</style>
 {% endblock content %}

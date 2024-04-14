@@ -1,31 +1,94 @@
 {% extends 'base.html' %}
 
+
 {% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="advertisement-categories">
+                <h1>Категории объявлений</h1>
+                <div class="button-group">
+                    {% for category in cat_list %}
+                    <button class="btn" onclick="location.href='{% url 'fan_board:category_ads' category %}'">{{ category }}</button>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <section id="news">
+                <h2>Новости</h2>
+                <p>Последние события в игре и сообществе.</p>
+                {% for ad in ads_list %}
+                <div class="news-item">
+                    <h3><a href="{% url 'fan_board:ads_detail' ad.headline %}">{{ ad.headline }}</a></h3>
+                    <p><strong>Автор:</strong> {{ ad.ad_author.get_full_name }}</p>
+                </div>
+                {% endfor %}
+                {% if is_paginated %}
+                <div class="pagination">
+                    <span class="step-links">
+                        {% if page_obj.has_previous %}
+                            <a href="?page=1">&laquo; Первая</a>
+                            <a href="?page={{ page_obj.previous_page_number }}">Предыдущая</a>
+                        {% endif %}
+                        <span class="current">
+                            Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+                        </span>
+                        {% if page_obj.has_next %}
+                            <a href="?page={{ page_obj.next_page_number }}">Следующая</a>
+                            <a href="?page={{ page_obj.paginator.num_pages }}">Последняя &raquo;</a>
+                        {% endif %}
+                    </span>
+                </div>
+                {% endif %}
+            </section>
+        </div>
+    </div>
+</div>
+    <style>
+    .btn {
+        background-color: #4CAF50; /* Зеленый цвет */
+        color: white; /* Цвет текста */
+        padding: 10px 20px; /* Отступы */
+        border: none; /* Убираем границу */
+        text-align: center; /* Выравниваем текст по центру */
+        text-decoration: none; /* Убираем подчеркивание */
+        display: inline-block; /* Показываем как блочный элемент */
+        font-size: 16px; /* Размер шрифта */
+        margin: 4px 2px; /* Отступы между кнопками */
+        cursor: pointer; /* Курсор при наведении */
+        border-radius: 5px; /* Закругляем углы */
+    }
+    
+    .btn:hover {
+        background-color: #45a049; /* Темнее зеленый цвет при наведении */
+    }
+        /* Добавленные стили для пагинации */
+    .pagination {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+    }
 
-    <div>
-        <section class="content">
-        <h2>Добро пожаловать!</h2>
-        <p>Здесь вы найдете последние новости, полезные гайды, общество игроков и многое другое.</p>
-        </section>
-    </div>
-    <div>
-    <h1>Advertisement Categories</h1>
-        <ul>
-          {% for category in cat_list %}
-            <li><a href="{% url 'fan_board:category_ads' category %}">{{ category }}</a>
-          {% endfor %}
-        </ul>
-    </div>
-    <div>
-        <section id="news">
-        <h2>Новости</h2>
-        <p>Последние события в игре и сообществе.</p>
-{#        <!-- Здесь могут быть новости -->{{ ads_list }}#}
-        {% for list in ads_list %}
-            <p><a href="{% url 'fan_board:ads_detail' list.pk %}">{{ list.title }}</a></p>
-{#            <p>{{ list.text|safe|truncatechars:10 }}</p>#}
-        {% endfor %}
-        </section>
-    </div>
+    .pagination a {
+        padding: 6px 12px;
+        margin: 0 3px;
+        border: 1px solid #ddd;
+        background-color: #f9f9f9;
+        color: #428bca;
+        text-decoration: none;
+    }
 
+    .pagination a:hover {
+        background-color: #ddd;
+    }
+
+    .pagination .current {
+        border-color: #428bca;
+        background-color: #428bca;
+        color: #fff;
+    }
+    </style>
 {% endblock content %}
