@@ -91,8 +91,10 @@ class AdDetailView(generic.DetailView):
         a dictionary containing the context data.
         """
         context = super().get_context_data(**kwargs)
+        ad = self.get_object()
         context['ads_list'] = Advertisement.objects.all()
-        context['ad_response'] = Response.objects.filter(ad=self.get_object())
+        # context['ad_response'] = Response.objects.filter(ad=self.get_object())
+        context['accepted_responses'] = ad.responses.filter(accepted_answer=True)
         context['form'] = self.form_class()
         return context
 
