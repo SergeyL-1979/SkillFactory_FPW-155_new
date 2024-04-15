@@ -29,32 +29,38 @@
         </div>
         <hr>
         <div class="response">
-            <strong>Ответы</strong>
-            {% if ad_response %}
-                {% for response in ad_response %}
-                    <p>{{ response.text }}</p>
-                    <p>Author: {{ response.user_answer.first_name }}</p>
-                {% endfor %}
+            {% if accepted_responses %}
+                <strong>Принятые отклики:</strong>
+                <ul>
+                    {% for response in accepted_responses %}
+                        <li>
+                            <p>{{ response.text }}</p>
+                            <p><strong>Author:</strong> <q>{{ response.user_answer.first_name }}</q></p>
+                        </li>
+                    {% endfor %}
+                </ul>
             {% else %}
-                <h3>Нет ответов</h3>
+                <h3>Пока что нет принятых откликов.</h3>
             {% endif %}
         </div>
-        <hr>
-        {% if request.user.is_authenticated %}
-            {% if not ads_detail.ad_author == request.user %}
-            <div class="comment-form">
-                <h2 style="text-align: center;">Добавить отклик</h2>
-                <form method="post">
-                    {% csrf_token %}
-                    {% for field in form %}
-                        <p><label for="{{ field.id_for_label }}">{{ field.label }}: </label>{{ field }}</p>
-                        <div class="form-error">{{ field.errors }}</div>
-                    {% endfor %}
-                    <button type="submit">Отправить отклик</button>
-                </form>
-            </div>
+        
+        <div>
+            {% if request.user.is_authenticated %}
+                {% if not ads_detail.ad_author == request.user %}
+                <div class="comment-form">
+                    <h2 style="text-align: center;">Добавить отклик</h2>
+                    <form method="post">
+                        {% csrf_token %}
+                        {% for field in form %}
+                            <p><label for="{{ field.id_for_label }}">{{ field.label }}: </label>{{ field }}</p>
+                            <div class="form-error">{{ field.errors }}</div>
+                        {% endfor %}
+                        <button type="submit">Отправить отклик</button>
+                    </form>
+                </div>
+                {% endif %}
             {% endif %}
-        {% endif %}
+        </div>
     </div>
     
     <style>
