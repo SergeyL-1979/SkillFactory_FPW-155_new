@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 
 class CategoryAdsView(generic.ListView):
-    """ Просмотр показа рекламы по категориям. """
+    """ View advertising displays by category. """
     model = Advertisement
     template_name = 'fan_board/category_ads.html'
     context_object_name = 'cat_list'
@@ -28,14 +28,28 @@ class CategoryAdsView(generic.ListView):
 
     def get_queryset(self):
         """
-        Получите набор запросов объектов Advertisement, отфильтрованных по
-        название категории объявлений, указанное в параметре URL-slug.
+        Retrieves the queryset of advertisements based on the specified slug.
 
-        :return: Queryset of Advertisement objects
+        Returns:
+            QuerySet: The queryset of advertisements filtered by the ad category name.
         """
         return Advertisement.objects.filter(ad_category__name=self.kwargs['slug'])
 
     def get_context_data(self, **kwargs):
+        """
+        Retrieves the context data for the view.
+        This method overrides the `get_context_data` method of the parent class to add additional
+        data to the context. It retrieves the category name based on the slug provided in
+        the URL parameters. It also paginates the `cat_list` based on the `paginate_by` attribute of
+        the class. The current page number is obtained from the query parameters.
+        The paginated `cat_list` is added to the context, along with the category name.
+
+        Parameters:
+            **kwargs (dict): Additional keyword arguments.
+
+        Returns:
+            dict: The updated context data.
+        """
         context = super().get_context_data(**kwargs)
         context['category_name'] = get_object_or_404(Category, name=self.kwargs['slug'])
 
@@ -47,14 +61,26 @@ class CategoryAdsView(generic.ListView):
 
 
 class AdListView(generic.ListView):
+    """ View for displaying a list of advertisements. """
     model = Advertisement
     context_object_name = 'ads_list'
     paginate_by = 3
 
     def get_category_display(self):
+        """
+        Returns the value of the 'category_display' query parameter from the current request's GET parameters.
+
+        :return: The value of the 'category_display' query parameter as a string, or None if it is not present.
+        """
         return self.request.GET.get('category_display')
 
     def get_context_data(self, **kwargs):
+        """
+        Get the context data for the view.
+
+        :param kwargs: Additional keyword arguments.
+        :return: The context data dictionary.
+        """
         context = super(AdListView, self).get_context_data(**kwargs)
         # context['cat_list'] = [category[1] for category in Category.choices]
         context['cat_list'] = Category.objects.all()
@@ -74,14 +100,12 @@ class AdDetailView(generic.DetailView):
             queryset = self.get_queryset()
         pk = self.kwargs.get('pk')
         headline = self.kwargs.get('headline')
-        # Пытаемся получить объект по первичному ключу (pk)
+
         if pk:
             queryset = queryset.filter(pk=pk)
         elif headline:
             queryset = queryset.filter(headline=headline)
 
-        # Получаем значение из URL и используем его для фильтрации объявлений
-        # headline = self.kwargs.get('headline')
         return get_object_or_404(queryset, headline=headline)
 
     def get_context_data(self, **kwargs):
@@ -104,67 +128,105 @@ class AdDetailView(generic.DetailView):
             return redirect('users:login')
         form = self.form_class(request.POST)
         if form.is_valid():
-            # Сохраняем отклик в базу данных
             response = form.save(commit=False)
             response.ad = self.get_object()
             response.user_answer = request.user
             response.save()
             return redirect('fan_board:ads_detail', headline=self.get_object().headline)
         else:
-            # Если форма не допустима, повторно отображаем страницу с формой и ошибками
             return self.render_to_response(self.get_context_data(form=form))
 
 
 class AdCreateView(LoginRequiredMixin, generic.CreateView):
+    """ View for creating a new advertisement. """
     model = Advertisement
     form_class = AdvertisementForm
 
     def form_valid(self, form):
+        """
+        Sets the `ad_author` attribute of the `form.instance` object to the currently logged-in
+        user and calls the `form_valid` method of the parent class with the provided `form` parameter.
+
+        Parameters:
+            form (Form): The form instance to be validated.
+
+        Returns:
+            HttpResponse: The response returned by the `form_valid` method of the parent class.
+        """
         form.instance.ad_author = self.request.user
         return super().form_valid(form)
 
     def get_success_url(self):
-        # Получаем созданный объект объявления
+        """
+        Retrieves the success URL for the current object.
+
+        Returns:
+            str: The success URL for the created ad, based on the headline of the ad.
+        """
         created_ad = self.object
-        # Формируем URL на основе заголовка объявления
         return reverse('fan_board:ads_detail', kwargs={'headline': created_ad.headline})
 
 
 class AdUpdateView(LoginRequiredMixin, generic.UpdateView):
+    """ View for updating an existing advertisement. """
     model = Advertisement
     form_class = AdvertisementUpdateForm
     template_name = 'fan_board/advertisement_update_form.html'
 
     def dispatch(self, request, *args, **kwargs):
-        # Получаем объект объявления
+        """
+        Dispatches the request to the appropriate handler method.
+
+        Parameters:
+            request (HttpRequest): The HTTP request object.
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        Returns:
+            HttpResponse: The HTTP response object.
+        """
         obj = self.get_object()
 
-        # Проверяем, является ли текущий пользователь автором объявления
         if request.user != obj.ad_author:
-            # Если нет, отображаем страницу с сообщением об ошибке
             return HttpResponseForbidden(render(request, 'fan_board/error_page.html'))
 
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
+        """
+        Check if the form is valid and assign the ad_author as the
+        current user before calling the parent class's form_valid method.
+        """
         form.instance.ad_author = self.request.user
         return super().form_valid(form)
 
     def get_object(self, queryset=None):
-        # Получаем значение заголовка из адресной строки
+        """
+        Retrieves an object from the database based on the provided headline.
+
+        Parameters:
+            queryset (QuerySet, optional): The queryset to retrieve the object from. Defaults to None.
+
+        Returns:
+            Advertisement: The retrieved Advertisement object.
+        """
         headline = self.kwargs.get('headline')
-        # Получаем объект объявления по заголовку
         obj = Advertisement.objects.get(headline=headline)
         return obj
 
     def get_success_url(self):
-        # Получаем созданный объект объявления
+        """
+        Retrieves the success URL for the current object.
+
+        Returns:
+            str: The success URL for the created ad, based on the headline of the ad.
+        """
         created_ad = self.object
-        # Формируем URL на основе заголовка объявления
         return reverse('fan_board:ads_detail', kwargs={'headline': created_ad.headline})
 
 
 class AdDeleteView(LoginRequiredMixin, generic.DeleteView):
+    """ View for deleting an existing advertisement. """
     model = Advertisement
     success_url = '/mmorpg/'
 
@@ -177,15 +239,64 @@ class AdDeleteView(LoginRequiredMixin, generic.DeleteView):
 
 
 class PrivatePageView(LoginRequiredMixin, generic.TemplateView):
+    """ View for displaying private page. """
     template_name = 'fan_board/private_page.html'
 
     def get_context_data(self, **kwargs):
+        """
+        Retrieves the context data for the view.
+        This method is responsible for retrieving the context data for the view.
+        It calls the `get_context_data` method of the parent class and adds the
+        filtered responses to the context. The filtered responses are obtained
+        by filtering the `Response` objects based on the `ad__ad_author` field,
+        which is compared to the `request.user` attribute of the current request.
+
+        Parameters:
+            **kwargs (dict): Additional keyword arguments.
+
+        Returns:
+            dict: The context data for the view, including the filtered responses.
+        """
         context = super().get_context_data(**kwargs)
-        # Фильтруем отклики по объявлению
         context['responses'] = Response.objects.filter(ad__ad_author=self.request.user)
         return context
 
     def post(self, request, *args, **kwargs):
+        """
+        Handles the POST request for the given view.
+
+        Args:
+            request (HttpRequest): The HTTP request object.
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+
+        Returns:
+            HttpResponseRedirect: A redirect response to the 'fan_board:private_page' URL.
+
+        Raises:
+            Http404: If the response with the given ID is not found.
+
+        Description:
+            This function handles the POST request for the view. It retrieves the 'response_id' and 'action'
+            parameters from the request's POST data. It then retrieves the Response object with the given ID.
+
+            If the 'action' parameter is 'delete', it checks if the response's ad author is the same as the
+            request user. If so, it deletes the response, displays a success message, and redirects to the
+            'fan_board:private_page' URL. Otherwise, it displays an error message.
+
+            If the 'action' parameter is 'accept', it checks if the response's ad author is the same as the
+            request user. If so, it sets the 'accepted_answer' attribute of the response to True, saves the
+            response, displays a success message, and redirects to the 'fan_board:private_page' URL. Otherwise,
+            it displays an error message.
+
+            If the response with the given ID is not found, it raises an Http404 exception.
+
+        Note:
+            This function assumes that the necessary imports and middleware have been set up correctly.
+
+        Example Usage:
+            response = self.post(request, *args, **kwargs)
+        """
         response_id = request.POST.get('response_id')
         action = request.POST.get('action')
 
@@ -209,11 +320,16 @@ class PrivatePageView(LoginRequiredMixin, generic.TemplateView):
 
 
 class SearchAdsView(generic.ListView):
+    """ View for searching ads. """
     model = Advertisement
     template_name = 'fan_board/search_results.html'
     filterset_class = AdvertisementFilter
 
     def get_queryset(self):
+        """
+        A method that filters the queryset based on a search query parameter
+        in the request.
+        """
         queryset = super().get_queryset()
         query = self.request.GET.get('q')
 
@@ -231,28 +347,15 @@ class SearchAdsView(generic.ListView):
         return queryset
 
     def get(self, request, *args, **kwargs):
+        """
+        A description of the entire function, its parameters, and its return types.
+        """
         if 'q' in self.request.GET:
             # Если есть параметр 'q' в запросе, значит, это запрос поиска
-            # Отображаем шаблон для результатов поиска
+            # отображаем шаблон для результатов поиска
             return render(request, 'fan_board/search_results.html', {'object_list': self.get_queryset()})
         else:
             # В противном случае отображаем только форму поиска
             return render(request, 'fan_board/search_form.html')
 
-# class SearchAdsView(generic.ListView):
-#     model = Advertisement
-#     template_name = 'fan_board/search_results.html'
-#     filterset_class = AdvertisementFilter
-#
-#     def get_queryset(self):
-#         queryset = super().get_queryset()
-#         query = self.request.GET.get('q')
-#
-#         if query:
-#             queryset = queryset.filter(
-#                 Q(ad_author__first_name__icontains=query) |
-#                 Q(ad_category__name__icontains=query) |
-#                 Q(headline__icontains=query)
-#             )
-#
-#         return queryset
+

@@ -1,5 +1,3 @@
-from django import forms
-from django.db.models import Q
 from django_filters import FilterSet
 from .models import Advertisement
 

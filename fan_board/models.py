@@ -10,7 +10,7 @@ from django_ckeditor_5.fields import CKEditor5Field
 
 
 class Category(models.Model):
-    """ Модель для категорий объявлений """
+    """ Model for ad categories. """
     name = models.CharField(max_length=100, unique=True, verbose_name='Имя категории')
 
     class Meta:
@@ -65,7 +65,7 @@ def create_initial_categories(sender, **kwargs):
 
 
 class Advertisement(models.Model):
-    """ Модель для объявлений """
+    """ MODEL FOR ADS """
     ad_author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name='Автор')
     ad_category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='Категория')
     headline = models.CharField(max_length=100, verbose_name='Заголовок')
@@ -78,16 +78,21 @@ class Advertisement(models.Model):
         verbose_name_plural = 'Объявления'
 
     def __str__(self):
-        """ Строковое отображение объекта """
+        """
+        Returns a string representation of the object.
+
+        :return: A string representing the headline of the object.
+        :rtype: str
+        """
         return f'{self.headline}'
 
     def get_absolute_url(self):
-        """ Получить ссылку на объект """
+        """ Get a reference to an object. """
         return reverse('fan_board:ads_detail', kwargs={'headline': self.headline})
 
 
 class Response(models.Model):
-    """ Модель для откликов """
+    """ MODEL FOR RESPONSES TO ADVERTISEMENTS """
     ad = models.ForeignKey(Advertisement, related_name='responses', on_delete=models.CASCADE)
     text = models.TextField()
     user_answer = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
@@ -96,6 +101,12 @@ class Response(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
+        """
+        Returns a string representation of the object.
+
+        :return: A string representation of the object.
+        :rtype: str
+        """
         return f'{self.text}'
 
     class Meta:
