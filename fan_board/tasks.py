@@ -4,7 +4,7 @@ from celery import shared_task
 from django.core.mail import send_mail
 from django.utils import timezone
 from django.template.loader import render_to_string
-from .models import Advertisement
+from fan_board.models import Advertisement
 from users.models import CustomUser
 
 
