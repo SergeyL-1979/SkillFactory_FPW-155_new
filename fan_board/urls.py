@@ -17,4 +17,6 @@ urlpatterns = [
     path('private/', views.PrivatePageView.as_view(), name='private_page'),
 
     path('search/', views.SearchAdsView.as_view(), name='search_results'),
+
+    path('my-ads/', views.MyAdsView.as_view(), name='my_ads'),
 ]

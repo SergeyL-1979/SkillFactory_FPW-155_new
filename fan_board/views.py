@@ -319,6 +319,20 @@ class PrivatePageView(LoginRequiredMixin, generic.TemplateView):
         return redirect('fan_board:private_page')
 
 
+class MyAdsView(generic.ListView):
+    """ View for displaying my ads. """
+    model = Advertisement
+    template_name = 'fan_board/my_ads.html'
+
+    def get_queryset(self):
+        return Advertisement.objects.filter(ad_author=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['my_ads'] = self.get_queryset()
+        return context
+
+
 class SearchAdsView(generic.ListView):
     """ View for searching ads. """
     model = Advertisement

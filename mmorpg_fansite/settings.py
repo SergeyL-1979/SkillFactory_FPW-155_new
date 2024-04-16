@@ -264,7 +264,7 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 # =========== Основные настройки allauth =================
 LOGIN_URL = '/account/login/'
 LOGIN_REDIRECT_URL = '/account/profile/'
-LOGOUT_REDIRECT_URL = '/mmorpg/'
+LOGOUT_REDIRECT_URL = '/'
 
 AUTH_USER_MODEL = 'users.CustomUser'
 DOMAIN_NAME = os.environ.get('DOMAIN_NAME')
