@@ -26,3 +26,11 @@
   Танки, Хилы, ДД, Торговцы, Гилдмастеры, Квестгиверы, Кузнецы, Кожевники, Зельевары, Мастера заклинаний.
 
 ### Также мы бы хотели иметь возможность отправлять пользователям новостные рассылки.
+
+```redis
+celery -A mmorpg_fansite worker -l INFO
+celery -A mmorpg_fansite beat -l INFO
+celery -A mmorpg_fansite flower
+
+docker run -d -p 6379:6379 redis
+```
