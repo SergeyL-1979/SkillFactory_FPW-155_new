@@ -25,3 +25,4 @@ def send_weekly_newsletter():
         if user.email:
             html_message = render_to_string(template, {'advertisement_week_ads': advertisement_week_ads})
             send_mail(email_subject, 'Weekly digest', settings.EMAIL_HOST_USER, [user.email], html_message=html_message)
+
