@@ -5,6 +5,7 @@ from django.core.mail import send_mail
 from django.utils import timezone
 from django.template.loader import render_to_string
 from fan_board.models import Advertisement
+from mmorpg_fansite import settings
 from users.models import CustomUser
 
 
@@ -20,29 +21,7 @@ def send_weekly_newsletter():
         if ad.created_at >= date.today() - week:
             advertisement_week_ads.append(ad)
 
-    # # Определите категории объявлений, которые вы хотите включить в рассылку
-    # categories = ['Недвижимость', 'Транспорт', 'Работа']  # Пример категорий
-    #
-    # # Определите дату начала недели
-    # start_date = timezone.now() - timezone.timedelta(days=7)
-    #
-    # # Получите все объявления за последнюю неделю в указанных категориях
-    # new_ads = Advertisement.objects.filter(category__in=categories, created_at__gte=start_date)
-    #
-    # # Получите список зарегистрированных пользователей
-    # users = CustomUser.objects.all()
-    #
-    # for user in users:
-    #     # Формируем контент для письма
-    #     context = {
-    #         'user': user,
-    #         'new_ads': new_ads,
-    #     }
-    #
-    #     # Отправляем письмо
-    #     subject = 'Еженедельная рассылка новостей'
-    #     message = render_to_string('notification_email.html', context)
-    #     user_email = user.email
-    #     send_mail(subject, message, 'noreply@example.com', [user_email])
-    #
-    # print("Weekly newsletter sent successfully!")
+    for user in CustomUser.objects.all():
+        if user.email:
+            html_message = render_to_string(template, {'advertisement_week_ads': advertisement_week_ads})
+            send_mail(email_subject, 'Weekly digest', settings.EMAIL_HOST_USER, [user.email], html_message=html_message)
