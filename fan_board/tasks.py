@@ -20,7 +20,6 @@ def send_weekly_newsletter():
         if ad.created_at >= date.today() - week:
             advertisement_week_ads.append(ad)
 
-
     # # Определите категории объявлений, которые вы хотите включить в рассылку
     # categories = ['Недвижимость', 'Транспорт', 'Работа']  # Пример категорий
     #
