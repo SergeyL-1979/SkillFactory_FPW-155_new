@@ -5,6 +5,22 @@
     <title>Title</title>
 </head>
 <body>
-
+{% block content %}
+    <h1>Your News Portal Weekly Digest</h1>
+    
+    {% if advertisement_week_ads %}
+        <h2>New advertisements created this week:</h2>
+        <ul>
+            {% for ad in advertisement_week_ads %}
+                <li><strong>{{ ad.headline }}</strong></li>
+                <li><q>{{ ad.ad_category }}</q></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No new advertisements created this week.</p>
+    {% endif %}
+    
+    <p>Thank you for subscribing to our weekly digest!</p>
+{% endblock content %}
 </body>
 </html>

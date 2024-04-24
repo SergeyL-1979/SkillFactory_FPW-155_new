@@ -1,4 +1,4 @@
-from datetime import timedelta, date
+from datetime import timedelta, datetime
 
 from celery import shared_task
 from django.core.mail import send_mail
@@ -10,20 +10,17 @@ from users.models import CustomUser
 
 
 @shared_task
-def send_weekly_newsletter():
-    week = timedelta(days=7)
-    ads = Advertisement.objects.all()
-    advertisement_week_ads = []
+def week_email_sending():
+    start_date = timezone.now() - timedelta(days=7)
+    ads = Advertisement.objects.filter(created_at__gte=start_date)
+    advertisement_week_ads = list(ads)
+    print(advertisement_week_ads, '[INFO] - ads list')
     template = 'weekly_digest.html'
     email_subject = 'Your News Portal Weekly Digest'
-
-    for ad in ads:
-        if ad.created_at >= date.today() - week:
-            advertisement_week_ads.append(ad)
 
     for user in CustomUser.objects.all():
         if user.email:
             html_message = render_to_string(template, {'advertisement_week_ads': advertisement_week_ads})
-            send_mail(email_subject, 'Weekly digest', settings.EMAIL_HOST_USER, [user.email], html_message=html_message)
-
-# =========
+            send_mail(email_subject, 'Weekly digest', settings.EMAIL_HOST_USER,
+                      fail_silently=False, recipient_list=[user.email],
+                      html_message=html_message)
