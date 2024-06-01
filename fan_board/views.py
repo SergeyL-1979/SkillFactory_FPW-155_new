@@ -389,49 +389,32 @@ class SearchAdsView(generic.ListView):
             return render(request, 'fan_board/search_form.html')
 
 
-# ============ РЕАЛИЗАЦИЯ ПОДПИСКИ,ОТПИСКИ ОТ РАССЫЛКИ ================
-# class FollowUserView(LoginRequiredMixin, generic.View):
-#     def post(self, request, *args, **kwargs):
-#         user = request.user
-#         user_subscription, created = Subscription.objects.get_or_create(user=user)
-#         user_subscription.subscribed = True
-#         user_subscription.save()
-#
-#         # Отправка уведомления об успешной подписке
-#         send_mail(
-#             subject='Подписка на рассылку',
-#             message='Вы подписались на рассылку новых объявлений.',
-#             from_email=settings.DEFAULT_FROM_EMAIL,
-#             recipient_list=[user.email],
-#         )
-#         print('Подписка активирована')
-#         # return redirect(request.META.get('HTTP_REFERER'))
-#         # Передача статуса подписки в контекст шаблона
-#         return render(request, "fan_board/advertisement_list.html", {'is_subscribed': True})
-#
-#
-# class UnfollowUserView(LoginRequiredMixin, generic.View):
-#     def post(self, request, *args, **kwargs):
-#         user = request.user
-#         user_subscription, created = Subscription.objects.get_or_create(user=user)
-#         user_subscription.subscribed = False
-#         user_subscription.save()
-#
-#         # Отправка уведомления об успешной подписке
-#         send_mail(
-#             subject='Отписка от рассылки',
-#             message=f'Вы отписались от рассылки новых объявлений.',
-#             from_email=settings.DEFAULT_FROM_EMAIL,
-#             recipient_list=[user.email],
-#         )
-#         print('Подписка деактивирована')
-#         # return redirect(request.META.get('HTTP_REFERER'))
-#         # Передача статуса подписки в контекст шаблона
-#         return render(request, "fan_board/advertisement_list.html", {'is_subscribed': False})
-# =======================================================================================================
-
-# ===================================== НОВОЕ РЕАЛИЗАЦИЯ ПОДПИСКИ,ОТПИСКИ ОТ РАССЫЛКИ ================================
 class ToggleSubscriptionView(LoginRequiredMixin, View):
+    """
+    Handles the POST request for the view.
+
+    Args:
+        request (HttpRequest): The HTTP request object.
+        *args: Variable length argument list.
+        **kwargs: Arbitrary keyword arguments.
+
+    Returns:
+        HttpResponseRedirect: A redirect response to the referrer URL.
+
+    Description:
+        This function handles the POST request for the view. It retrieves the 'action' parameter from the request's POST data.
+        It then retrieves or creates a Subscription object for the current user. If the 'action' parameter is 'subscribe',
+        it sets the 'subscribed' attribute of the user_subscription object to True and sends a subscription confirmation
+        email to the user. If the 'action' parameter is 'unsubscribe', it sets the 'subscribed' attribute to False and
+        sends an unsubscription confirmation email. The user_subscription object is saved after each change.
+        Finally, it logs the subscription status and redirects the user back to the referrer URL.
+
+    Note:
+        This function assumes that the necessary imports and middleware have been set up correctly.
+
+    Example Usage:
+        response = self.post(request, *args, **kwargs)
+    """
     def post(self, request, *args, **kwargs):
         user = request.user
         action = request.POST.get('action')
@@ -457,23 +440,3 @@ class ToggleSubscriptionView(LoginRequiredMixin, View):
         print(f'User {user.username} has {"subscribed" if action == "subscribe" else "unsubscribed"}')
         return redirect(request.META.get('HTTP_REFERER'))
 
-
-# def advertisement_list(request):
-    # user = request.user
-    # is_subscribed = True
-    # if user.is_authenticated:
-    #     try:
-    #         subscription = Subscription.objects.get(user=user)
-    #         is_subscribed = subscription.subscribed
-    #         logger.info(f"User {user.username} is {'subscribed' if is_subscribed else 'not subscribed'}")
-    #     except Subscription.DoesNotExist:
-    #         is_subscribed = False
-    #         logger.info(f"Subscription does not exist for user {user.username}")
-    #         print(f'Subscription does not exist for user {user.username}')
-    # logger.info(f"is_subscribed: {is_subscribed}")
-    # print(f'is_subscribed: {is_subscribed}')
-    # return render(request, 'fan_board/advertisement_list.html',
-    #               {
-    #                   'is_subscribed': is_subscribed,
-    #                   'user': user,
-    #               })

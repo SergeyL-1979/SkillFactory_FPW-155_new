@@ -115,6 +115,7 @@ class Response(models.Model):
 
 
 class Subscription(models.Model):
+    """ MODEL FOR SUBSCRIPTIONS """
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     subscribed = models.BooleanField(default=False)
 
