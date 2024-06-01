@@ -4,22 +4,38 @@
 {% block content %}
 <div class="container">
 
-    <div>
-        {% if is_subscribed %}
+    <div id="subscription-section">
+    <p>is_subscribed: {{ is_subscribed }}</p>
+{% if is_subscribed %}
+    <form method="post" action="{% url 'fan_board:toggle_subscription' %}">
         <b>Если больше не желаете получать уведомление о новых новостях, нажмите отписаться</b>
-        <form action="{% url 'fan_board:unfollow' %}" method="post">
-            {% csrf_token %}
-            <button type="submit" class="btn">Отписаться</button>
-        </form>
-            
-        {% else %}
-            
-        <b>Если хотите получать уведомления о новых новостях, вы можете подписаться на данную категорию</b>
-        <form action="{% url 'fan_board:follow' %}" method="post">
-            {% csrf_token %}
-            <button type="submit" class="btn">Подписаться</button>
-        </form>
-        {% endif %}
+        {% csrf_token %}
+        <input type="hidden" name="action" value="unsubscribe">
+        <button type="submit" class="btn">Отписаться</button>
+    </form>
+{% else %}
+    <form method="post" action="{% url 'fan_board:toggle_subscription' %}">
+        <b>Если хотите получать уведомления о новых новостях, вы можете подписаться</b>
+        {% csrf_token %}
+        <input type="hidden" name="action" value="subscribe">
+        <button type="submit" class="btn">Подписаться</button>
+    </form>
+{% endif %}
+{#        {% if is_subscribed %}#}
+{#        <b>Если больше не желаете получать уведомление о новых новостях, нажмите отписаться</b>#}
+{#        <form action="{% url 'fan_board:unfollow' %}" method="post">#}
+{#            {% csrf_token %}#}
+{#            <button type="submit" class="btn">Отписаться</button>#}
+{#        </form>#}
+{#            #}
+{#        {% else %}#}
+{#            #}
+{#        <b>Если хотите получать уведомления о новых новостях, вы можете подписаться</b>#}
+{#        <form action="{% url 'fan_board:follow' %}" method="post">#}
+{#            {% csrf_token %}#}
+{#            <button type="submit" class="btn">Подписаться</button>#}
+{#        </form>#}
+{#        {% endif %}#}
     </div>
 
     <div class="row">

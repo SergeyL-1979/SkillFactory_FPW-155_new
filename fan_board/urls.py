@@ -20,6 +20,7 @@ urlpatterns = [
 
     path('my-ads/', views.MyAdsView.as_view(), name='my_ads'),
 
-    path('subscribers/', views.FollowUserView.as_view(), name='follow'),
-    path('unsubscribers/', views.UnfollowUserView.as_view(), name='unfollow'),
+    # path('subscribers/', views.FollowUserView.as_view(), name='follow'),
+    # path('unsubscribers/', views.UnfollowUserView.as_view(), name='unfollow'),
+    path('toggle_subscription/', views.ToggleSubscriptionView.as_view(), name='toggle_subscription'),
 ]
