@@ -3,6 +3,25 @@
 
 {% block content %}
 <div class="container">
+
+    <div>
+        {% if is_subscribed %}
+        <b>Если больше не желаете получать уведомление о новых новостях, нажмите отписаться</b>
+        <form action="{% url 'fan_board:unfollow' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn">Отписаться</button>
+        </form>
+            
+        {% else %}
+            
+        <b>Если хотите получать уведомления о новых новостях, вы можете подписаться на данную категорию</b>
+        <form action="{% url 'fan_board:follow' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn">Подписаться</button>
+        </form>
+        {% endif %}
+    </div>
+
     <div class="row">
         <div class="col-md-6">
             <div class="advertisement-categories">

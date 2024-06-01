@@ -1,6 +1,6 @@
 from django_ckeditor_5.widgets import CKEditor5Widget
 from django import forms
-from .models import Advertisement, Response
+from .models import Advertisement, Response, Subscription
 
 
 class AdvertisementForm(forms.ModelForm):
@@ -66,3 +66,9 @@ class ResponseForm(forms.ModelForm):
         labels = {
             'text': ' ',
         }
+
+
+class SubscriptionForm(forms.ModelForm):
+    class Meta:
+        model = Subscription
+        fields = ['subscribed']

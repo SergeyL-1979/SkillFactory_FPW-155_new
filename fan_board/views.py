@@ -1,7 +1,10 @@
 import logging
 
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import HttpResponseForbidden
@@ -11,8 +14,9 @@ from django.shortcuts import get_object_or_404, redirect
 from django.views import generic
 
 from fan_board.filters import AdvertisementFilter
-from fan_board.models import Advertisement, Response, Category
-from fan_board.forms import AdvertisementForm, ResponseForm, AdvertisementUpdateForm
+from fan_board.models import Advertisement, Response, Category, Subscription
+from fan_board.forms import AdvertisementForm, ResponseForm, AdvertisementUpdateForm, SubscriptionForm
+from mmorpg_fansite import settings
 
 logger = logging.getLogger(__name__)
 
@@ -373,3 +377,117 @@ class SearchAdsView(generic.ListView):
             return render(request, 'fan_board/search_form.html')
 
 
+# ============ РЕАЛИЗАЦИЯ ПОДПИСКИ,ОТПИСКИ ОТ РАССЫЛКИ ================
+# @login_required
+# def follow_user(request):
+#     if request.method == 'POST':
+#         form = SubscriptionForm(request.POST, instance=request.user.subscription)
+#         if form.is_valid():
+#             form.save()
+#             # Отправить подтверждение подписки
+#             # Не забудьте импортировать send_mail и settings
+#             send_mail(
+#                 subject='Подписка на рассылку',
+#                 message=f'Вы подписались на рассылку.',
+#                 from_email=settings.DEFAULT_FROM_EMAIL,
+#                 recipient_list=[request.user.email, ]
+#             )
+#             return redirect('some_success_url')  # Перенаправление на страницу успешной подписки
+#     else:
+#         form = SubscriptionForm(instance=request.user.subscription)
+#     return render(request, 'fan_board/follow.html', {'form': form})
+#
+#
+# @login_required
+# def unfollow_user(request):
+#     if request.method == 'POST':
+#         subscription = request.user.subscription
+#         subscription.subscribed = False
+#         subscription.save()
+#         # Отправить подтверждение отписки
+#         send_mail(
+#             subject='Отписка от рассылки',
+#             message=f'Вы отписались от рассылки.',
+#             from_email=settings.DEFAULT_FROM_EMAIL,
+#             recipient_list=[request.user.email, ]
+#         )
+#         return redirect('some_success_url')  # Перенаправление на страницу успешной отписки
+
+# ====================================================================================
+# @login_required
+# # @require_POST
+class FollowUserView(LoginRequiredMixin, generic.View):
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        user_subscription, created = Subscription.objects.get_or_create(user=user)
+        user_subscription.subscribed = True
+        user_subscription.save()
+
+        # Отправка уведомления об успешной подписке
+        send_mail(
+            subject='Подписка на рассылку',
+            message='Вы подписались на рассылку новых объявлений.',
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[user.email],
+        )
+        print('Подписка активирована')
+        # return redirect(request.META.get('HTTP_REFERER'))
+        # Передача статуса подписки в контекст шаблона
+        return render(request, "fan_board/advertisement_list.html", {'is_subscribed': True})
+
+    # def follow_user(self, request, *args, **kwargs):
+    #     if request.method == 'POST':
+    #         user = request.user
+    #         user_subscription, created = Subscription.objects.get_or_create(user=user)
+    #         user_subscription.subscribed = True
+    #         user_subscription.save()
+    #
+    #         # Отправка уведомления об успешной подписке
+    #         send_mail(
+    #             subject='Подписка на рассылку',
+    #             message=f'Вы подписались на рассылку новых объявлений.',
+    #             from_email=settings.DEFAULT_FROM_EMAIL,
+    #             recipient_list=[user.email],
+    #         )
+    #         print('Подписка активирована')
+    #         return redirect(request.META.get('HTTP_REFERER'))
+
+
+# @login_required
+# @require_POST
+class UnfollowUserView(LoginRequiredMixin, generic.View):
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        user_subscription, created = Subscription.objects.get_or_create(user=user)
+        user_subscription.subscribed = False
+        user_subscription.save()
+
+        # Отправка уведомления об успешной подписке
+        send_mail(
+            subject='Отписка от рассылки',
+            message=f'Вы отписались от рассылки новых объявлений.',
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[user.email],
+        )
+        print('Подписка активирована')
+        # return redirect(request.META.get('HTTP_REFERER'))
+        # Передача статуса подписки в контекст шаблона
+        return render(request, "fan_board/advertisement_list.html", {'is_subscribed': False})
+
+
+    # def unfollow_user(request):
+    #     if request.method == 'POST':
+    #         user = request.user
+    #         user_subscription, created = Subscription.objects.get_or_create(user=user)
+    #         user_subscription.subscribed = False
+    #         user_subscription.save()
+    #
+    #         # Отправка уведомления об отписке
+    #         send_mail(
+    #             subject='Отписка от рассылки',
+    #             message=f'Вы отписались от рассылки новых объявлений.',
+    #             from_email=settings.DEFAULT_FROM_EMAIL,
+    #             recipient_list=[user.email],
+    #         )
+    #         print('Подписка отключена')
+    #         return redirect(request.META.get('HTTP_REFERER'))

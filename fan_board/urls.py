@@ -19,4 +19,7 @@ urlpatterns = [
     path('search/', views.SearchAdsView.as_view(), name='search_results'),
 
     path('my-ads/', views.MyAdsView.as_view(), name='my_ads'),
+
+    path('subscribers/', views.FollowUserView.as_view(), name='follow'),
+    path('unsubscribers/', views.UnfollowUserView.as_view(), name='unfollow'),
 ]

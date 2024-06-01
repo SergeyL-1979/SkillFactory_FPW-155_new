@@ -4,7 +4,7 @@ from celery import shared_task
 from django.core.mail import send_mail
 from django.utils import timezone
 from django.template.loader import render_to_string
-from fan_board.models import Advertisement
+from fan_board.models import Advertisement, Subscription
 from mmorpg_fansite import settings
 from users.models import CustomUser
 
@@ -24,3 +24,21 @@ def week_email_sending():
             send_mail(email_subject, 'Weekly digest', settings.EMAIL_HOST_USER,
                       fail_silently=False, recipient_list=[user.email],
                       html_message=html_message)
+
+
+def send_weekly_updates():
+    # Получить список подписанных пользователей
+    subscribed_users = Subscription.objects.filter(subscribed=True).select_related('user')
+
+    # Найти объявления, опубликованные за последнюю неделю
+    week_ago = timezone.now() - timezone.timedelta(weeks=1)
+    new_ads = Advertisement.objects.filter(created_at__gte=week_ago)
+
+    # Отправить уведомление о новых объявлениях каждому подписанному пользователю
+    for subscription in subscribed_users:
+        send_mail(
+            subject='Новые объявления за неделю',
+            message='Здесь ваше сообщение о новых объявлениях за последнюю неделю.',
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[subscription.user.email],
+        )

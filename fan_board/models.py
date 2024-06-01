@@ -113,3 +113,14 @@ class Response(models.Model):
         verbose_name = 'Отклик'
         verbose_name_plural = 'Отклики'
 
+
+class Subscription(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    subscribed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{self.user} - {self.subscribed}'
+
+    class Meta:
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'

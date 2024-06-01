@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Advertisement, Response, Category
+from .models import Advertisement, Response, Category, Subscription
 
 
 @admin.register(Advertisement)
@@ -22,4 +22,9 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ['name', ]
 
 
+class SubscriptionAdmin(admin.ModelAdmin):
+    list_display = ['user', 'subscribed', ]
+
+
+admin.site.register(Subscription, SubscriptionAdmin)
 admin.site.register(Category, CategoryAdmin)
