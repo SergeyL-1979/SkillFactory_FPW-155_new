@@ -228,7 +228,7 @@ class AdUpdateView(LoginRequiredMixin, generic.UpdateView):
 class AdDeleteView(LoginRequiredMixin, generic.DeleteView):
     """ View for deleting an existing advertisement. """
     model = Advertisement
-    success_url = '/mmorpg/'
+    success_url = '/'
 
     def get_object(self, queryset=None):
         # Получаем значение заголовка из адресной строки
