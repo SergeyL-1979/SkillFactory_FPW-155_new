@@ -378,44 +378,6 @@ class SearchAdsView(generic.ListView):
 
 
 # ============ РЕАЛИЗАЦИЯ ПОДПИСКИ,ОТПИСКИ ОТ РАССЫЛКИ ================
-# @login_required
-# def follow_user(request):
-#     if request.method == 'POST':
-#         form = SubscriptionForm(request.POST, instance=request.user.subscription)
-#         if form.is_valid():
-#             form.save()
-#             # Отправить подтверждение подписки
-#             # Не забудьте импортировать send_mail и settings
-#             send_mail(
-#                 subject='Подписка на рассылку',
-#                 message=f'Вы подписались на рассылку.',
-#                 from_email=settings.DEFAULT_FROM_EMAIL,
-#                 recipient_list=[request.user.email, ]
-#             )
-#             return redirect('some_success_url')  # Перенаправление на страницу успешной подписки
-#     else:
-#         form = SubscriptionForm(instance=request.user.subscription)
-#     return render(request, 'fan_board/follow.html', {'form': form})
-#
-#
-# @login_required
-# def unfollow_user(request):
-#     if request.method == 'POST':
-#         subscription = request.user.subscription
-#         subscription.subscribed = False
-#         subscription.save()
-#         # Отправить подтверждение отписки
-#         send_mail(
-#             subject='Отписка от рассылки',
-#             message=f'Вы отписались от рассылки.',
-#             from_email=settings.DEFAULT_FROM_EMAIL,
-#             recipient_list=[request.user.email, ]
-#         )
-#         return redirect('some_success_url')  # Перенаправление на страницу успешной отписки
-
-# ====================================================================================
-# @login_required
-# # @require_POST
 class FollowUserView(LoginRequiredMixin, generic.View):
     def post(self, request, *args, **kwargs):
         user = request.user
@@ -435,26 +397,7 @@ class FollowUserView(LoginRequiredMixin, generic.View):
         # Передача статуса подписки в контекст шаблона
         return render(request, "fan_board/advertisement_list.html", {'is_subscribed': True})
 
-    # def follow_user(self, request, *args, **kwargs):
-    #     if request.method == 'POST':
-    #         user = request.user
-    #         user_subscription, created = Subscription.objects.get_or_create(user=user)
-    #         user_subscription.subscribed = True
-    #         user_subscription.save()
-    #
-    #         # Отправка уведомления об успешной подписке
-    #         send_mail(
-    #             subject='Подписка на рассылку',
-    #             message=f'Вы подписались на рассылку новых объявлений.',
-    #             from_email=settings.DEFAULT_FROM_EMAIL,
-    #             recipient_list=[user.email],
-    #         )
-    #         print('Подписка активирована')
-    #         return redirect(request.META.get('HTTP_REFERER'))
 
-
-# @login_required
-# @require_POST
 class UnfollowUserView(LoginRequiredMixin, generic.View):
     def post(self, request, *args, **kwargs):
         user = request.user
@@ -469,25 +412,7 @@ class UnfollowUserView(LoginRequiredMixin, generic.View):
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[user.email],
         )
-        print('Подписка активирована')
+        print('Подписка деактивирована')
         # return redirect(request.META.get('HTTP_REFERER'))
         # Передача статуса подписки в контекст шаблона
         return render(request, "fan_board/advertisement_list.html", {'is_subscribed': False})
-
-
-    # def unfollow_user(request):
-    #     if request.method == 'POST':
-    #         user = request.user
-    #         user_subscription, created = Subscription.objects.get_or_create(user=user)
-    #         user_subscription.subscribed = False
-    #         user_subscription.save()
-    #
-    #         # Отправка уведомления об отписке
-    #         send_mail(
-    #             subject='Отписка от рассылки',
-    #             message=f'Вы отписались от рассылки новых объявлений.',
-    #             from_email=settings.DEFAULT_FROM_EMAIL,
-    #             recipient_list=[user.email],
-    #         )
-    #         print('Подписка отключена')
-    #         return redirect(request.META.get('HTTP_REFERER'))
