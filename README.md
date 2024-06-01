@@ -32,5 +32,8 @@ celery -A mmorpg_fansite worker -l INFO
 celery -A mmorpg_fansite beat -l INFO
 celery -A mmorpg_fansite flower
 
+# auth celery
+celery -A mmorpg_fansite flower --basic-auth=user:pasword
+
 docker run -d -p 6379:6379 redis
 ```
